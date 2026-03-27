@@ -107,11 +107,8 @@ fun MyTaskItem(
                     style = MaterialTheme.typography.titleSmall
                 )
             }
-
-
         }
     }
-
 }
 
 @Composable
@@ -123,16 +120,3 @@ fun MyCustomRow(content: @Composable RowScope.() -> Unit) {
         content()
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
