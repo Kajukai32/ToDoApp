@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.jetBrainsKotlinSerialization)
+//    firebase
+    id("com.google.gms.google-services")
 }
 
 hilt {
@@ -76,7 +78,13 @@ dependencies {
     //navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
+    //Firebase Auth
+    implementation(libs.firebase.auth)
 
 }
+
 

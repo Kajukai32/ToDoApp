@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "475979452574",
+    "project_id": "tareapp-d6ea6",
+    "storage_bucket": "tareapp-d6ea6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475979452574:android:fc98e30793a1ff8c962b8f",
+        "android_client_info": {
+          "package_name": "com.arturojas32.todoapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfaBBZZnViEd1N66uSBPECIOuMs9RRclo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

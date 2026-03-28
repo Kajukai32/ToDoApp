@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arturojas32.todoapp.ui.screens.AddTaskScreen
+import com.arturojas32.todoapp.ui.screens.LoginScreen
 import com.arturojas32.todoapp.ui.screens.TaskListScreen
 
 @Composable
@@ -16,11 +17,19 @@ fun NavigationWrapper(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = TaskListRoute
+        startDestination = LoginScreenRoute
     ) {
+        composable<LoginScreenRoute> {
+            LoginScreen(onLoginClick = { navController.navigate(TaskListRoute) })
+        }
 
         composable<TaskListRoute> {
             TaskListScreen(
+                onBackClick = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<LoginScreenRoute> { inclusive = true }
+                    }
+                },
                 onAddTaskClick = {
                     navController.navigate(route = AddTaskRoute)
                 },

@@ -41,6 +41,7 @@ import com.arturojas32.todoapp.ui.viewmodels.TaskListViewModel
 fun TaskListScreen(
     taskListViewModel: TaskListViewModel = hiltViewModel(),
     addTaskListViewModel: TaskFeaturesViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
     onAddTaskClick: () -> Unit,
     onTaskItemClick: (Int) -> Unit
 ) {
@@ -52,7 +53,7 @@ fun TaskListScreen(
     Scaffold(
         topBar = {
             MyTopBar(
-                onBackClick = {},
+                onBackClick = { onBackClick() },
                 title = "Tasks",
                 rightIconAction = {
                     Box(
