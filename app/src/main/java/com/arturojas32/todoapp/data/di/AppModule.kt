@@ -1,4 +1,4 @@
-package com.arturojas32.todoapp.data.mappers.di
+package com.arturojas32.todoapp.data.di
 
 import android.app.Application
 import androidx.room.Room

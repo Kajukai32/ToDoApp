@@ -15,10 +15,6 @@ class TaskRepository @Inject constructor(private val taskDao: TaskDao) {
         taskDao.insertTask(newTask = task.toEntity())
     }
 
-    suspend fun updateTask(updatedTask: Task) {
-        taskDao.updateTask(updatedTask = updatedTask.toEntity())
-    }
-
     suspend fun deleteTask(taskToDelete: Task) {
         taskDao.deleteTask(taskToDelete = taskToDelete.toEntity())
     }
@@ -43,5 +39,12 @@ class TaskRepository @Inject constructor(private val taskDao: TaskDao) {
 
     suspend fun deleteTaskById(taskId: Int) {
         taskDao.deleteTaskById(taskId = taskId)
+    }
+
+    suspend fun getTasksByTitleOrDesc(string: String): List<Task> {
+        val tasksToDomain = taskDao.getTasksByTitleOrDesc(query = string).map { taskEntity ->
+            taskEntity.toDomain()
+        }
+        return tasksToDomain
     }
 }

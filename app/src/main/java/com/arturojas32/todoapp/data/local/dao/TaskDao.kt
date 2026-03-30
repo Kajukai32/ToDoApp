@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.arturojas32.todoapp.data.local.entities.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -17,9 +16,6 @@ interface TaskDao {
 
     @Query(value = "SELECT * FROM tasks ORDER BY id DESC")
     fun getAllTasks(): Flow<List<TaskEntity>>
-
-    @Update
-    suspend fun updateTask(updatedTask: TaskEntity)
 
     @Delete
     suspend fun deleteTask(taskToDelete: TaskEntity)
@@ -33,5 +29,7 @@ interface TaskDao {
     @Query(value = "DELETE  FROM tasks WHERE id = :taskId")
     suspend fun deleteTaskById(taskId: Int)
 
+    @Query(value = "SELECT * FROM tasks WHERE title LIKE '%'|| :query|| '%' OR `desc` LIKE '%'|| :query|| '%'")
+    suspend fun getTasksByTitleOrDesc(query: String): List<TaskEntity>
 
 }

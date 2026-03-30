@@ -33,8 +33,10 @@ fun MyTaskItem(
 ) {
 
     ElevatedCard(
-        modifier = Modifier.clickable { onTaskItemClick(task.id) },
-        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
+        modifier = Modifier
+            .clickable { onTaskItemClick(task.id) }
+            .padding(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(
             modifier = Modifier

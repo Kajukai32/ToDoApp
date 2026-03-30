@@ -3,22 +3,32 @@ package com.arturojas32.todoapp.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,21 +44,26 @@ import com.arturojas32.todoapp.ui.components.MyTopBar
 import com.arturojas32.todoapp.ui.viewmodels.SortedBy
 import com.arturojas32.todoapp.ui.viewmodels.TaskFeaturesViewModel
 import com.arturojas32.todoapp.ui.viewmodels.TaskListViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListScreen(
     taskListViewModel: TaskListViewModel = hiltViewModel(),
-    addTaskListViewModel: TaskFeaturesViewModel = hiltViewModel(),
+    taskFeaturesViewModel: TaskFeaturesViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onAddTaskClick: () -> Unit,
     onTaskItemClick: (Int) -> Unit
 ) {
 
-    val taskUiState by taskListViewModel.taskListUiSate.collectAsStateWithLifecycle()
+    val taskListUiState by taskListViewModel.taskListUiSate.collectAsStateWithLifecycle()
     var showDialog by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
+    var isSearchBarVisible by remember { mutableStateOf(false) }
+    val snackBarState = remember { SnackbarHostState() }
+    val scope: CoroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -62,26 +77,36 @@ fun TaskListScreen(
                             .clickable(onClick = { isExpanded = !isExpanded }),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_sort_by),
-                            contentDescription = "Clickable sort tasks icon"
-                        )
-                        DropdownMenu(
-                            expanded = isExpanded,
-                            onDismissRequest = { isExpanded = false }
-                        ) {
-                            SortedBy.entries.forEach { option ->
-                                MyDropDownItem(
-                                    optionText = when (option) {
-                                        SortedBy.COMPLETED -> "Done tasks"
-                                        SortedBy.DEFAULT -> "Recently created"
-                                    },
-                                    onClick = {
-                                        taskListViewModel.onSortedByChange(sortedByNewValue = option)
-                                        isExpanded = false
-                                    })
+                        Row() {
+                            Icon(
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable { isSearchBarVisible = true },
+                                painter = painterResource(R.drawable.ic_search),
+                                contentDescription = "clickable search icon"
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                modifier = Modifier.size(30.dp),
+                                painter = painterResource(R.drawable.ic_sort_by),
+                                contentDescription = "Clickable sort tasks icon"
+                            )
+                            DropdownMenu(
+                                expanded = isExpanded,
+                                onDismissRequest = { isExpanded = false }
+                            ) {
+                                SortedBy.entries.forEach { option ->
+                                    MyDropDownItem(
+                                        optionText = when (option) {
+                                            SortedBy.COMPLETED -> "Done tasks"
+                                            SortedBy.DEFAULT -> "Recently created"
+                                        },
+                                        onClick = {
+                                            taskListViewModel.onSortedByChange(sortedByNewValue = option)
+                                            isExpanded = false
+                                        })
+                                }
                             }
-
                         }
                     }
                 }
@@ -92,10 +117,15 @@ fun TaskListScreen(
                 AddFabDialog(onClick = { onAddTaskClick() })
             }
         },
-        floatingActionButtonPosition = FabPosition.EndOverlay
+        floatingActionButtonPosition = FabPosition.EndOverlay,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarState
+            )
+        }
     ) { innerpadding ->
 
-        if (taskUiState.tasksState.isEmpty()) {
+        if (taskListUiState.tasksState.isEmpty() && !isSearchBarVisible) {
             Box(
                 modifier = Modifier
                     .padding(paddingValues = innerpadding)
@@ -104,31 +134,67 @@ fun TaskListScreen(
             )
 
         } else {
-            LazyColumn(
+
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
-                    .padding(innerpadding),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(innerpadding)
+                    .padding(8.dp)
             ) {
-
-                items(taskUiState.tasksState) { task ->
-
-                    MyTaskItem(
-                        task = task,
-                        onTaskItemClick = { taskId -> onTaskItemClick(taskId) },
-                        onCheckedChangeClick = { taskId ->
-                            addTaskListViewModel.onCheckedChangeClick(
-                                taskId = taskId
+                if (isSearchBarVisible) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                        label = { Text(text = "Title or description reference") },
+                        value = taskListUiState.stringToSearch,
+                        onValueChange = { newValue ->
+                            taskListViewModel.onSearchFieldValueChange(
+                                newValue = newValue
                             )
-                        }, onDeleteClick = { taskId -> addTaskListViewModel.onDeleteClick(taskId) })
+                        },
+                        trailingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_cancel_operation),
+                                modifier = Modifier.clickable { isSearchBarVisible = false },
+                                contentDescription = "clickable cancel operation icon"
+                            )
+                        }
+                    )
                 }
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
 
+                    items(taskListUiState.tasksState) { task ->
+
+                        MyTaskItem(
+                            task = task,
+                            onTaskItemClick = { taskId -> onTaskItemClick(taskId) },
+                            onCheckedChangeClick = { taskId ->
+                                taskFeaturesViewModel.onCheckedChangeClick(
+                                    taskId = taskId
+                                )
+                            },
+                            onDeleteClick = { taskId ->
+                                taskFeaturesViewModel.onDeleteClick(taskId)
+                                scope.launch {
+                                    val result = snackBarState.showSnackbar(
+                                        message = "Task deleted",
+                                        actionLabel = "Undo",
+                                        duration = SnackbarDuration.Long
+                                    )
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        taskFeaturesViewModel.restoreTask()
+                                    }
+                                }
+                            })
+                    }
+                }
             }
         }
     }
 }
-
 
 
 

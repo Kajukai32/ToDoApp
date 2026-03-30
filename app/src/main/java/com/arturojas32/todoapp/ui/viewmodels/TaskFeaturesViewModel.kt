@@ -38,10 +38,10 @@ class TaskFeaturesViewModel @Inject constructor(
             viewModelScope.launch {
                 val fetchedTask = repo.getTaskById(taskID)
 
-                fetchedTask?.let { task ->
+                fetchedTask?.let { fetchedTask ->
                     _taskState.update { currentState ->
                         currentState.copy(
-                            task = task,
+                            task = fetchedTask,
                             saveButtonEnabled = true,
                             scaffoldTitle = "Edit task",
                             submitButtonText = "Update task"
@@ -105,11 +105,32 @@ class TaskFeaturesViewModel @Inject constructor(
         }
     }
 
-    fun onDeleteClick(taskId: Int) {
+    fun restoreTask() {
         viewModelScope.launch {
+            _taskState.value.deletedTask?.let { deletedTask ->
+                repo.insertTask(
+                    task = deletedTask
+                )
+            }
+            _taskState.update { currentState ->
+                currentState.copy(deletedTask = null)
+            }
+        }
+
+    }
+
+    fun onDeleteClick(taskId: Int) {
+
+
+        viewModelScope.launch {
+
+            _taskState.update { currentState ->
+                currentState.copy(deletedTask = repo.getTaskById(taskId))
+            }
             repo.deleteTaskById(taskId)
         }
     }
+
 }
 
 data class TaskState(
@@ -123,5 +144,8 @@ data class TaskState(
     ),
     val saveButtonEnabled: Boolean = false,
     val scaffoldTitle: String = "New task",
-    val submitButtonText: String = "Save task"
+    val submitButtonText: String = "Save task",
+
+    val deletedTask: Task? = null
+
 )

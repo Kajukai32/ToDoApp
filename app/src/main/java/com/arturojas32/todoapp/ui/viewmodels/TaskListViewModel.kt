@@ -15,8 +15,8 @@ import javax.inject.Inject
 class TaskListViewModel @Inject constructor(private val repo: TaskRepository) : ViewModel() {
 
     private val _tasksListUiState = MutableStateFlow<TaskListUiSate>(TaskListUiSate())
-
     val taskListUiSate: StateFlow<TaskListUiSate> = _tasksListUiState
+
 
     init {
         viewModelScope.launch {
@@ -31,12 +31,11 @@ class TaskListViewModel @Inject constructor(private val repo: TaskRepository) : 
 
                         SortedBy.DEFAULT -> tasksFromDB
                     }
-                    currentState.copy(tasksState = sortedList)
+                    currentState.copy(tasksState = sortedList, rawTaskList = tasksFromDB)
                 }
             }
         }
     }
-
 
     fun onSortedByChange(sortedByNewValue: SortedBy) {
         _tasksListUiState.update { currentSate ->
@@ -52,11 +51,38 @@ class TaskListViewModel @Inject constructor(private val repo: TaskRepository) : 
         }
 
     }
+
+    fun onSearchFieldValueChange(newValue: String) {
+
+        _tasksListUiState.update { currentState ->
+
+            currentState.copy(
+                stringToSearch = newValue,
+                tasksState = if (newValue.isEmpty()) {
+                    currentState.rawTaskList
+                } else {
+                    currentState.rawTaskList.filter { task ->
+                        task.title.contains(
+                            ignoreCase = true,
+                            other = newValue
+                        ) || (!task.desc.isNullOrEmpty() && task.desc.contains(
+                            other =
+                                newValue, ignoreCase = true
+                        ))
+                    }
+
+                }
+            )
+        }
+    }
 }
 
 data class TaskListUiSate(
+    val rawTaskList: List<Task> = listOf(),
     val tasksState: List<Task> = listOf(),
-    val sortedBy: SortedBy = SortedBy.DEFAULT
+//    val filteredTasksState: List<Task> = listOf(),
+    val sortedBy: SortedBy = SortedBy.DEFAULT,
+    val stringToSearch: String = ""
 )
 
 enum class SortedBy { COMPLETED, DEFAULT }
