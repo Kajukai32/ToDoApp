@@ -13,3 +13,5 @@ data class UpdateTaskRoute(val taskId: Int)
 
 @Serializable
 object LoginScreenRoute
+@Serializable
+object RegisterScreenRoute

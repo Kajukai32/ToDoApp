@@ -16,7 +16,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             ToDoAppTheme {
 
-                NavigationWrapper()
+                NavigationWrapper(
+                    startOnHome = false
+                )
             }
         }
     }

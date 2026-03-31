@@ -8,19 +8,24 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arturojas32.todoapp.ui.screens.AddTaskScreen
 import com.arturojas32.todoapp.ui.screens.LoginScreen
+import com.arturojas32.todoapp.ui.screens.RegisterScreen
 import com.arturojas32.todoapp.ui.screens.TaskListScreen
 
 @Composable
-fun NavigationWrapper(modifier: Modifier = Modifier) {
+fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
 
     val navController: NavHostController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = LoginScreenRoute
+        startDestination = if (startOnHome) TaskListRoute else LoginScreenRoute
     ) {
         composable<LoginScreenRoute> {
-            LoginScreen(onLoginClick = { navController.navigate(TaskListRoute) })
+            LoginScreen(
+                onLoginClick = { navController.navigate(TaskListRoute) },
+                onGoToRegisterScreen = {
+                    navController.navigate(route = RegisterScreenRoute)
+                })
         }
 
         composable<TaskListRoute> {
@@ -47,6 +52,14 @@ fun NavigationWrapper(modifier: Modifier = Modifier) {
             AddTaskScreen(onBackClick = {
                 navController.navigate(route = TaskListRoute) {
                     popUpTo<TaskListRoute> { inclusive = true }
+                }
+            })
+        }
+        composable<RegisterScreenRoute> {
+
+            RegisterScreen(onBackClick = {
+                navController.navigate(route = LoginScreenRoute) {
+                    popUpTo<LoginScreenRoute> { inclusive = true }
                 }
             })
         }

@@ -24,7 +24,6 @@ class AuthRepositoryImpl @Inject constructor(
         awaitClose { auth.removeAuthStateListener(listener) }
     }.distinctUntilChanged()
 
-
     override suspend fun signIn(
         email: String,
         password: String

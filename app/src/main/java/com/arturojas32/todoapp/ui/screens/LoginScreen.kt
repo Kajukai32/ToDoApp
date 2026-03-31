@@ -1,5 +1,13 @@
 package com.arturojas32.todoapp.ui.screens
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,27 +29,58 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arturojas32.todoapp.R
-import com.arturojas32.todoapp.ui.viewmodels.AuthViewModel
+import com.arturojas32.todoapp.ui.viewmodels.LoginViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    authViewModel: AuthViewModel = hiltViewModel(), onLoginClick: () -> Unit
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    onLoginClick: () -> Unit,
+    onGoToRegisterScreen: () -> Unit
 ) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val animatedButtonBorderColor by infiniteTransition.animateColor(
+        initialValue = Color.Red,
+        targetValue = MaterialTheme.colorScheme.secondary,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000), repeatMode = RepeatMode.Reverse
+        )
+    )
+    val animatedButtonBorderWidtSize: Dp by infiniteTransition.animateValue(
+        initialValue = 0.5.dp,
+        targetValue = 3.0.dp,
+        typeConverter = Dp.VectorConverter,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1500), repeatMode = RepeatMode.Reverse
+        )
+    )
 
-    val loginScreenUIState by authViewModel.loginScreenUiState.collectAsStateWithLifecycle()
+    val loginScreenUIState by loginViewModel.loginScreenUiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(loginViewModel) {
+        loginViewModel.event.collectLatest { event ->
+
+            when (event) {
+                LoginViewModel.Event.Success -> onLoginClick()
+            }
+        }
+    }
 
     Scaffold() { innerpading ->
         Column(
@@ -67,10 +106,10 @@ fun LoginScreen(
                 ),
                 value = loginScreenUIState.email,
                 onValueChange = { newValue ->
-                    authViewModel.onUserTextFieldValueChange(
+                    loginViewModel.onUserTextFieldValueChange(
                         newValue
                     )
-                },
+                }, enabled = !loginScreenUIState.loading,
                 label = {
                     Text(text = "Email")
                 }
@@ -89,13 +128,13 @@ fun LoginScreen(
                     VisualTransformation.None
                 },
                 onValueChange = { newValue ->
-                    authViewModel.onPasswordTextFieldValueChange(
+                    loginViewModel.onPasswordTextFieldValueChange(
                         newValue
                     )
                 },
                 trailingIcon = {
                     Icon(
-                        modifier = Modifier.clickable { authViewModel.onPasswordVisibilityClick() },
+                        modifier = Modifier.clickable { loginViewModel.onPasswordVisibilityClick() },
                         painter = if (loginScreenUIState.passwordVisibility) {
                             painterResource(R.drawable.ic_visibility_off)
                         } else {
@@ -103,7 +142,7 @@ fun LoginScreen(
                         },
                         contentDescription = null
                     )
-                },
+                }, enabled = !loginScreenUIState.loading,
                 label = {
                     Text(text = "Password")
                 }
@@ -112,25 +151,32 @@ fun LoginScreen(
             if (!loginScreenUIState.wasLoginSuccessful) {
 
                 Text(
-                    text = loginScreenUIState.msgLoginError,
+                    text = loginScreenUIState.error ?: "",
                     color = MaterialTheme.colorScheme.error
                 )
             }
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                enabled = loginScreenUIState.isLoginButtonEnabled,
-                onClick = {
-                    authViewModel.onLoginClick()
-                    if (loginScreenUIState.wasLoginSuccessful) {
-                        onLoginClick()
+                border = BorderStroke(
+                    width = if (!loginScreenUIState.loading) {
+                        animatedButtonBorderWidtSize
+                    } else {
+                        1.dp
+                    },
+                    color = if (!loginScreenUIState.loading) {
+                        animatedButtonBorderColor
+                    } else {
+                        MaterialTheme.colorScheme.primary
                     }
-                }, shape = RoundedCornerShape(16)
+                ),
+                enabled = loginScreenUIState.isLoginButtonEnabled,
+                onClick = { loginViewModel.signIn() }, shape = RoundedCornerShape(16)
             ) {
                 Text(text = "Log in")
             }
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {}, shape = RoundedCornerShape(16)
+                onClick = { onGoToRegisterScreen() }, shape = RoundedCornerShape(16)
             ) {
                 Text(text = "Register")
             }
