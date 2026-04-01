@@ -17,7 +17,6 @@ class TaskListViewModel @Inject constructor(private val repo: TaskRepository) : 
     private val _tasksListUiState = MutableStateFlow<TaskListUiSate>(TaskListUiSate())
     val taskListUiSate: StateFlow<TaskListUiSate> = _tasksListUiState
 
-
     init {
         viewModelScope.launch {
 

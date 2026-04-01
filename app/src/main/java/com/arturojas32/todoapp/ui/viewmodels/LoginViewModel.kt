@@ -4,6 +4,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
+import com.arturojas32.todoapp.utils.emailAndPasswordValidator
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -57,10 +58,10 @@ class LoginViewModel @Inject constructor(
     fun checkValidFields() {
         _loginScreenUiState.update { currentState ->
             currentState.copy(
-                isLoginButtonEnabled = !_loginScreenUiState.value.loading && Patterns.EMAIL_ADDRESS.matcher(
-                    currentState.email
+                isLoginButtonEnabled = !_loginScreenUiState.value.loading && emailAndPasswordValidator(
+                    email = _loginScreenUiState.value.email,
+                    password = _loginScreenUiState.value.password
                 )
-                    .matches() && currentState.password.length > 8
             )
         }
     }
@@ -98,6 +99,12 @@ class LoginViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun onStayLoggedValueChange() {
+        _loginScreenUiState.update { currentState ->
+            currentState.copy(stayLoggedValue = !currentState.stayLoggedValue)
         }
     }
 }
@@ -139,5 +146,6 @@ data class LoginScreenUiState(
 //    val msgLoginError: String = "",
     val passwordVisibility: Boolean = false,
     val loading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val stayLoggedValue: Boolean = true
 )

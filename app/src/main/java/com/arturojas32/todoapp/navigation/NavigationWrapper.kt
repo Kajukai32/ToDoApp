@@ -57,13 +57,15 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
         }
         composable<RegisterScreenRoute> {
 
-            RegisterScreen(onBackClick = {
-                navController.navigate(route = LoginScreenRoute) {
-                    popUpTo<LoginScreenRoute> { inclusive = true }
-                }
-            })
+            RegisterScreen(
+                onRegistered = { navController.navigate(route = TaskListRoute) { popUpTo(id = 0) } },
+                onBackClick = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<LoginScreenRoute> { inclusive = true }
+                    }
+                })
         }
     }
-
-
 }
+
+

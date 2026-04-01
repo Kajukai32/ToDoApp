@@ -1,5 +1,6 @@
 package com.arturojas32.todoapp.utils
 
+import android.util.Patterns
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -24,4 +25,8 @@ fun getSelectedDate(result: Long): String {
 fun getCurrentDate(): String {
 
     return LocalDate.now().format(formatter)
+}
+
+fun emailAndPasswordValidator(email: String, password: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 8
 }
