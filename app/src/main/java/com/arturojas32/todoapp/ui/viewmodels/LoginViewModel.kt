@@ -1,6 +1,5 @@
 package com.arturojas32.todoapp.ui.viewmodels
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
@@ -113,29 +112,6 @@ private fun Throwable.toReadable(): String {
     return (this.message ?: "Unexpected error. Try again later")
 }
 
-//    fun onLoginClick() {
-//
-//        firebaseAuth.signInWithEmailAndPassword(
-//            _loginScreenUiState.value.email.trim(),
-//            _loginScreenUiState.value.password.trim()
-//        ).addOnCompleteListener { task ->
-//            if (task.isSuccessful) {
-//                _loginScreenUiState.update { currentState ->
-//                    currentState.copy(wasLoginSuccessful = true)
-//                }
-//            } else {
-//                _loginScreenUiState.update { currentState ->
-//                    currentState.copy(
-//                        wasLoginSuccessful = false, msgLoginError = when (task.exception) {
-//                            is FirebaseAuthInvalidCredentialsException -> "Invalid email or password"
-//                            is FirebaseAuthInvalidUserException -> "Invalid email"
-//                            else -> "Failed to log in. Try again later"
-//                        }
-//                    )
-//                }
-//            }
-//        }
-//    }
 
 
 data class LoginScreenUiState(
@@ -143,7 +119,6 @@ data class LoginScreenUiState(
     val password: String = "",
     val isLoginButtonEnabled: Boolean = false,
     val wasLoginSuccessful: Boolean = false,
-//    val msgLoginError: String = "",
     val passwordVisibility: Boolean = false,
     val loading: Boolean = false,
     val error: String? = null,

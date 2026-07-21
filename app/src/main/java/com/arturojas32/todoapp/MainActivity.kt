@@ -23,3 +23,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+//cosas que falta=
+//cerrar sesion, implementacion de stay logged in

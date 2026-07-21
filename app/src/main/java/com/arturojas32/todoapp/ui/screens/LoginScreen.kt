@@ -8,7 +8,6 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,15 +19,12 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,18 +32,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arturojas32.todoapp.R
 import com.arturojas32.todoapp.ui.components.MyEmailTextField
 import com.arturojas32.todoapp.ui.components.MyPasswordTextField
 import com.arturojas32.todoapp.ui.viewmodels.LoginViewModel
@@ -88,7 +77,7 @@ fun LoginScreen(
         }
     }
 
-    Scaffold() { innerpading ->
+    Scaffold { innerpading ->
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -108,23 +97,7 @@ fun LoginScreen(
                 onValueChange = { newValue -> loginViewModel.onUserTextFieldValueChange(newValue) },
                 isEnabled = !loginScreenUIState.loading
             )
-//            OutlinedTextField(
-//                modifier = Modifier.fillMaxWidth(),
-//                keyboardOptions = KeyboardOptions(
-//                    capitalization = KeyboardCapitalization.None,
-//                    autoCorrectEnabled = false,
-//                    keyboardType = KeyboardType.Email
-//                ),
-//                value = loginScreenUIState.email,
-//                onValueChange = { newValue ->
-//                    loginViewModel.onUserTextFieldValueChange(
-//                        newValue
-//                    )
-//                }, enabled = !loginScreenUIState.loading,
-//                label = {
-//                    Text(text = "Email")
-//                }
-//            )
+
 
             MyPasswordTextField(
                 value = loginScreenUIState.password,
@@ -133,39 +106,7 @@ fun LoginScreen(
                 onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
                 isEnabled = !loginScreenUIState.loading
             )
-//            OutlinedTextField(
-//                modifier = Modifier.fillMaxWidth(),
-//                value = loginScreenUIState.password,
-//                keyboardOptions = KeyboardOptions(
-//                    capitalization = KeyboardCapitalization.None,
-//                    autoCorrectEnabled = false,
-//                    keyboardType = KeyboardType.Password
-//                ),
-//                visualTransformation = if (!loginScreenUIState.passwordVisibility) {
-//                    PasswordVisualTransformation()
-//                } else {
-//                    VisualTransformation.None
-//                },
-//                onValueChange = { newValue ->
-//                    loginViewModel.onPasswordTextFieldValueChange(
-//                        newValue
-//                    )
-//                },
-//                trailingIcon = {
-//                    Icon(
-//                        modifier = Modifier.clickable { loginViewModel.onPasswordVisibilityClick() },
-//                        painter = if (loginScreenUIState.passwordVisibility) {
-//                            painterResource(R.drawable.ic_visibility_off)
-//                        } else {
-//                            painterResource(R.drawable.ic_visibility_on)
-//                        },
-//                        contentDescription = null
-//                    )
-//                }, enabled = !loginScreenUIState.loading,
-//                label = {
-//                    Text(text = "Password")
-//                }
-//            )
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
                     checked = loginScreenUIState.stayLoggedValue,
@@ -181,13 +122,7 @@ fun LoginScreen(
                 )
             }
             Spacer(modifier = modifier.weight(0.7f))
-//            if (!loginScreenUIState.wasLoginSuccessful) {
-//
-//                Text(
-//                    text = loginScreenUIState.error ?: "",
-//                    color = MaterialTheme.colorScheme.error
-//                )
-//            }
+
 
             loginScreenUIState.error?.let { error ->
                 Row(verticalAlignment = Alignment.CenterVertically) {

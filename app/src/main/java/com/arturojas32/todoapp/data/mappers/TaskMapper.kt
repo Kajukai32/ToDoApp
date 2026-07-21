@@ -10,7 +10,11 @@ fun Task.toEntity(): TaskEntity {
         desc = desc,
         isDone = isDone,
         createdDate = createdDate,
-        deadLine = deadLine
+        deadLine = deadLine,
+        uId = uId,
+        remoteId = remoteId,
+        lastModified = lastModified,
+        isSynced = isSynced
     )
 }
 
@@ -21,6 +25,10 @@ fun TaskEntity.toDomain(): Task {
         desc = desc,
         isDone = isDone,
         createdDate = createdDate,
-        deadLine = deadLine
+        deadLine = deadLine,
+        uId = uId,
+        remoteId = remoteId,
+        lastModified = lastModified,
+        isSynced = isSynced
     )
 }
