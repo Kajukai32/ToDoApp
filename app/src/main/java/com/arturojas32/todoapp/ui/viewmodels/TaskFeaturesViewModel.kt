@@ -140,7 +140,9 @@ data class TaskState(
         desc = null,
         isDone = false,
         createdDate = getCurrentDate(),
-        deadLine = null
+        deadLine = null,
+        uId = "",
+        lastModified = 0L
     ),
     val saveButtonEnabled: Boolean = false,
     val scaffoldTitle: String = "New task",
