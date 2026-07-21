@@ -88,7 +88,7 @@ fun LoginScreen(
         }
     }
 
-    Scaffold() { innerpading ->
+    Scaffold { innerpading ->
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -108,23 +108,7 @@ fun LoginScreen(
                 onValueChange = { newValue -> loginViewModel.onUserTextFieldValueChange(newValue) },
                 isEnabled = !loginScreenUIState.loading
             )
-//            OutlinedTextField(
-//                modifier = Modifier.fillMaxWidth(),
-//                keyboardOptions = KeyboardOptions(
-//                    capitalization = KeyboardCapitalization.None,
-//                    autoCorrectEnabled = false,
-//                    keyboardType = KeyboardType.Email
-//                ),
-//                value = loginScreenUIState.email,
-//                onValueChange = { newValue ->
-//                    loginViewModel.onUserTextFieldValueChange(
-//                        newValue
-//                    )
-//                }, enabled = !loginScreenUIState.loading,
-//                label = {
-//                    Text(text = "Email")
-//                }
-//            )
+
 
             MyPasswordTextField(
                 value = loginScreenUIState.password,
@@ -133,39 +117,7 @@ fun LoginScreen(
                 onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
                 isEnabled = !loginScreenUIState.loading
             )
-//            OutlinedTextField(
-//                modifier = Modifier.fillMaxWidth(),
-//                value = loginScreenUIState.password,
-//                keyboardOptions = KeyboardOptions(
-//                    capitalization = KeyboardCapitalization.None,
-//                    autoCorrectEnabled = false,
-//                    keyboardType = KeyboardType.Password
-//                ),
-//                visualTransformation = if (!loginScreenUIState.passwordVisibility) {
-//                    PasswordVisualTransformation()
-//                } else {
-//                    VisualTransformation.None
-//                },
-//                onValueChange = { newValue ->
-//                    loginViewModel.onPasswordTextFieldValueChange(
-//                        newValue
-//                    )
-//                },
-//                trailingIcon = {
-//                    Icon(
-//                        modifier = Modifier.clickable { loginViewModel.onPasswordVisibilityClick() },
-//                        painter = if (loginScreenUIState.passwordVisibility) {
-//                            painterResource(R.drawable.ic_visibility_off)
-//                        } else {
-//                            painterResource(R.drawable.ic_visibility_on)
-//                        },
-//                        contentDescription = null
-//                    )
-//                }, enabled = !loginScreenUIState.loading,
-//                label = {
-//                    Text(text = "Password")
-//                }
-//            )
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
                     checked = loginScreenUIState.stayLoggedValue,
@@ -181,13 +133,7 @@ fun LoginScreen(
                 )
             }
             Spacer(modifier = modifier.weight(0.7f))
-//            if (!loginScreenUIState.wasLoginSuccessful) {
-//
-//                Text(
-//                    text = loginScreenUIState.error ?: "",
-//                    color = MaterialTheme.colorScheme.error
-//                )
-//            }
+
 
             loginScreenUIState.error?.let { error ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
