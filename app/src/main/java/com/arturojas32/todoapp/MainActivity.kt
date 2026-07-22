@@ -6,12 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.arturojas32.todoapp.navigation.NavigationWrapper
 import com.arturojas32.todoapp.ui.theme.ToDoAppTheme
+import com.arturojas32.todoapp.utils.SyncManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var syncManager: SyncManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        syncManager.startSync()
         enableEdgeToEdge()
         setContent {
             ToDoAppTheme {
