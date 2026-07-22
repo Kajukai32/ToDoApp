@@ -2,9 +2,9 @@ package com.arturojas32.todoapp.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arturojas32.todoapp.data.local.repository.TaskRepositoryImpl
 import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
 import com.arturojas32.todoapp.domain.model.Task
+import com.arturojas32.todoapp.domain.repository.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,12 +14,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskListViewModel @Inject constructor(
-    private val repo: TaskRepositoryImpl,
+    private val repo: TaskRepository,
     private val authRepo: AuthRepository
 ) : ViewModel() {
 
     private val _tasksListUiState = MutableStateFlow<TaskListUiSate>(TaskListUiSate())
-    val taskListUiSate: StateFlow<TaskListUiSate> = _tasksListUiState
+    val taskListUiState: StateFlow<TaskListUiSate> = _tasksListUiState
     private val uId: String? get() = authRepo.currentUser()?.uid
 
     init {

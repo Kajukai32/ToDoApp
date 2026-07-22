@@ -43,7 +43,7 @@ class TaskRepositoryImpl @Inject constructor(private val taskDao: TaskDao) : Tas
     }
 
     override suspend fun getTasksByTitleOrDesc(string: String): List<Task> {
-        val tasksToDomain = taskDao.getTasksByTitleOrDesc(query = string).map { taskEntity ->
+        val tasksToDomain = taskDao.getTasksByTitleOrAsc(query = string).map { taskEntity ->
             taskEntity.toDomain()
         }
         return tasksToDomain
