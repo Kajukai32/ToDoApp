@@ -30,3 +30,4 @@ fun getCurrentDate(): String {
 fun emailAndPasswordValidator(email: String, password: String): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 8
 }
+

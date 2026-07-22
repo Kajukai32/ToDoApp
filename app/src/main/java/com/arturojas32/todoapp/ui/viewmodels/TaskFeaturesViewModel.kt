@@ -4,9 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.arturojas32.todoapp.data.local.repository.TaskRepository
+import com.arturojas32.todoapp.data.local.repository.TaskRepositoryImpl
+import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
+import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepository
 import com.arturojas32.todoapp.domain.model.Task
 import com.arturojas32.todoapp.navigation.UpdateTaskRoute
+import com.arturojas32.todoapp.utils.SyncManager
 import com.arturojas32.todoapp.utils.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +20,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskFeaturesViewModel @Inject constructor(
-    private val repo: TaskRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val repo: TaskRepositoryImpl,
+    private val savedStateHandle: SavedStateHandle,
+    private val remoteDbRepo: RemoteDbRepository,
+    private val syncManager: SyncManager,
+    private val authRepo: AuthRepository
 ) : ViewModel() {
 
     private val taskID: Int? = try {
@@ -75,7 +81,13 @@ class TaskFeaturesViewModel @Inject constructor(
 
     fun onSaveTaskClick() {
         viewModelScope.launch {
-            repo.insertTask(_taskState.value.task)
+            val taskToSave = _taskState.value.task.copy(
+                uId = authRepo.currentUser()!!.uid,
+                isSynced = false,
+                lastModified = System.currentTimeMillis()
+            )
+            repo.insertTask(taskToSave)
+            syncManager.startSync()
         }
     }
 
@@ -91,17 +103,22 @@ class TaskFeaturesViewModel @Inject constructor(
         }
     }
 
-    fun onCheckedChangeClick(taskId: Int) {
+    fun onIsDoneCheckedChange(taskId: Int) {
 
         viewModelScope.launch {
             val fetchedTask = repo.getTaskById(taskId)
             fetchedTask?.let { fetchedTask ->
-                val updatedTask = fetchedTask.copy(isDone = !fetchedTask.isDone)
+                val updatedTask = fetchedTask.copy(
+                    isDone = !fetchedTask.isDone,
+                    lastModified = System.currentTimeMillis(),
+                    isSynced = false
+                )
                 _taskState.update { currentState ->
                     currentState.copy(task = updatedTask)
                 }
             }
             repo.insertTask(_taskState.value.task)
+
         }
     }
 
@@ -123,11 +140,21 @@ class TaskFeaturesViewModel @Inject constructor(
 
 
         viewModelScope.launch {
+            val taskToDelete = repo.getTaskById(taskId)?.copy(
+                isDeleted = true,
+                isSynced = false,
+                lastModified = System.currentTimeMillis()
+            )
 
             _taskState.update { currentState ->
-                currentState.copy(deletedTask = repo.getTaskById(taskId))
+                currentState.copy(deletedTask = taskToDelete)
             }
-            repo.deleteTaskById(taskId)
+            taskToDelete?.let { taskToDelete ->
+                repo.insertTask(taskToDelete)
+                syncManager.startSync()
+            }
+
+
         }
     }
 

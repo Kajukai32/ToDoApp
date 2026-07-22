@@ -14,7 +14,8 @@ fun Task.toEntity(): TaskEntity {
         uId = uId,
         remoteId = remoteId,
         lastModified = lastModified,
-        isSynced = isSynced
+        isSynced = isSynced,
+        isDeleted = isDeleted
     )
 }
 
@@ -29,6 +30,8 @@ fun TaskEntity.toDomain(): Task {
         uId = uId,
         remoteId = remoteId,
         lastModified = lastModified,
-        isSynced = isSynced
+        isSynced = isSynced,
+        isDeleted = isDeleted
     )
+
 }

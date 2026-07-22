@@ -15,6 +15,7 @@ data class TaskEntity(
     val createdDate: String,
     val deadLine: String? = null,
     val lastModified: Long,
-    val isSynced: Boolean = false
+    val isSynced: Boolean = false,
+    val isDeleted: Boolean = false,
 
 )
