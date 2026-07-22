@@ -14,9 +14,8 @@ interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(newTask: TaskEntity)
 
-    @Query(value = "SELECT * FROM tasks ORDER BY id DESC")
-    fun getAllTasks(): Flow<List<TaskEntity>>
-
+    @Query("SELECT * FROM tasks WHERE isDeleted = 0 AND uId = :uId ORDER BY id DESC")
+    fun getAllTasks(uId: String): Flow<List<TaskEntity>>
     @Delete
     suspend fun deleteTask(taskToDelete: TaskEntity)
 
@@ -28,6 +27,13 @@ interface TaskDao {
 
     @Query(value = "DELETE  FROM tasks WHERE id = :taskId")
     suspend fun deleteTaskById(taskId: Int)
+
+
+    @Query(value = "SELECT *  FROM tasks WHERE isSynced = 0")
+    suspend fun getUnsyncedTasks(): List<TaskEntity>
+
+    @Query(value = "SELECT *  FROM tasks WHERE remoteId = :remoteTaskId")
+    suspend fun getTaskByRemoteId(remoteTaskId: String): TaskEntity?
 
     @Query(value = "SELECT * FROM tasks WHERE title LIKE '%'|| :query|| '%' OR `desc` LIKE '%'|| :query|| '%'")
     suspend fun getTasksByTitleOrDesc(query: String): List<TaskEntity>
