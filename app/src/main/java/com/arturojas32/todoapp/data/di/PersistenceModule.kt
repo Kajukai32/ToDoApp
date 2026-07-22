@@ -9,7 +9,6 @@ import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
 import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepository
 import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepositoryImpl
 import com.arturojas32.todoapp.domain.repository.TaskRepository
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
