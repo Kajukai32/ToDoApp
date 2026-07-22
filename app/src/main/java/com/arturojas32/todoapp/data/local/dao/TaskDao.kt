@@ -36,6 +36,6 @@ interface TaskDao {
     suspend fun getTaskByRemoteId(remoteTaskId: String): TaskEntity?
 
     @Query(value = "SELECT * FROM tasks WHERE title LIKE '%'|| :query|| '%' OR `desc` LIKE '%'|| :query|| '%'")
-    suspend fun getTasksByTitleOrDesc(query: String): List<TaskEntity>
+    suspend fun getTasksByTitleOrAsc(query: String): List<TaskEntity>
 
 }

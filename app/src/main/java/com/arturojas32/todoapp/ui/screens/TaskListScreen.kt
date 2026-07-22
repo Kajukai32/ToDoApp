@@ -58,7 +58,7 @@ fun TaskListScreen(
     onTaskItemClick: (Int) -> Unit
 ) {
 
-    val taskListUiState by taskListViewModel.taskListUiSate.collectAsStateWithLifecycle()
+    val taskListUiState by taskListViewModel.taskListUiState.collectAsStateWithLifecycle()
     var showDialog by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
     var isSearchBarVisible by remember { mutableStateOf(false) }
