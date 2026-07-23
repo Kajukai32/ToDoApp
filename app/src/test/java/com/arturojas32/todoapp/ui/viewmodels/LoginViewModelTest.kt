@@ -1,7 +1,7 @@
 package com.arturojas32.todoapp.ui.viewmodels
 
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
-import com.google.firebase.auth.FirebaseUser
+import com.arturojas32.todoapp.domain.model.AuthUser
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import app.cash.turbine.test
 import io.mockk.coEvery
 import io.mockk.every
@@ -29,7 +29,7 @@ class LoginViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
     private lateinit var authRepo: AuthRepository
-    private val authStateFlow = MutableStateFlow<FirebaseUser?>(null)
+    private val authStateFlow = MutableStateFlow<AuthUser?>(null)
 
     @Before
     fun setUp() {
@@ -248,8 +248,8 @@ class LoginViewModelTest {
         val vm = createViewModel()
         assertNull(vm.user.value)
 
-        val mockUser = mockk<FirebaseUser>()
-        authStateFlow.value = mockUser
-        assertEquals(mockUser, vm.user.value)
+        val fakeUser = AuthUser(uid = "test-uid")
+        authStateFlow.value = fakeUser
+        assertEquals(fakeUser, vm.user.value)
     }
 }

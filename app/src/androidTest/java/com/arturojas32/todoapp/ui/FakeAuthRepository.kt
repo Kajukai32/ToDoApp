@@ -1,7 +1,7 @@
 package com.arturojas32.todoapp.ui
 
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
-import com.google.firebase.auth.FirebaseUser
+import com.arturojas32.todoapp.domain.model.AuthUser
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +19,10 @@ class FakeAuthRepository : AuthRepository {
     var lastEmail: String? = null
     var lastPassword: String? = null
 
-    private val _authState = MutableStateFlow<FirebaseUser?>(null)
-    override val authState: Flow<FirebaseUser?> = _authState
+    var fakeUid: String? = null
+
+    private val _authState = MutableStateFlow<AuthUser?>(null)
+    override val authState: Flow<AuthUser?> = _authState
 
     override suspend fun signIn(email: String, password: String): Result<Unit> {
         lastEmail = email
@@ -40,7 +42,8 @@ class FakeAuthRepository : AuthRepository {
 
     override fun signOut() {}
 
-    override fun currentUser(): FirebaseUser? = null
+    override fun currentUser(): AuthUser? =
+        fakeUid?.let { AuthUser(uid = it) }
 
     fun reset() {
         signInResult = Result.success(Unit)
@@ -51,5 +54,6 @@ class FakeAuthRepository : AuthRepository {
         registerCalled = false
         lastEmail = null
         lastPassword = null
+        fakeUid = null
     }
 }
