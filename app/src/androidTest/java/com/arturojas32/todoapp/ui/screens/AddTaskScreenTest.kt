@@ -38,11 +38,17 @@ class AddTaskScreenTest {
     }
 
     private fun setContent(
-        onBackClick: () -> Unit = {}
+        onBackClick: () -> Unit = {},
+        taskId: Int? = null
     ): TaskFeaturesViewModel {
+        val savedStateHandle = if (taskId != null) {
+            SavedStateHandle(mapOf("taskId" to taskId))
+        } else {
+            SavedStateHandle()
+        }
         val viewModel = TaskFeaturesViewModel(
             repo = fakeTaskRepo,
-            savedStateHandle = SavedStateHandle(),
+            savedStateHandle = savedStateHandle,
             remoteDbRepo = fakeRemoteDbRepo,
             syncManager = syncManager,
             authRepo = fakeAuthRepo
@@ -171,5 +177,23 @@ class AddTaskScreenTest {
 
         composeTestRule.onNodeWithText("Tap the calendar to set a deadline")
             .assertExists()
+    }
+
+    // --- Update flow: pre-filled fields ---
+
+    @Test
+    fun updateTask_fieldsPopulatedFromExistingTask() {
+        val existingTask = com.arturojas32.todoapp.domain.model.Task(
+            id = 42,
+            uId = "test-uid",
+            title = "Existing title",
+            desc = "Existing description"
+        )
+        fakeTaskRepo.emitTasks(listOf(existingTask))
+
+        setContent(taskId = 42)
+
+        composeTestRule.onNodeWithText("Existing title").assertExists()
+        composeTestRule.onNodeWithText("Existing description").assertExists()
     }
 }
