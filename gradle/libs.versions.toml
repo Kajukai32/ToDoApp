@@ -30,6 +30,7 @@ mockk = "1.13.13"
 turbine = "1.2.0"
 
 [libraries]
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
