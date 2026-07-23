@@ -3,6 +3,7 @@ package com.arturojas32.todoapp.ui.screens
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -53,6 +54,19 @@ class AddTaskScreenTest {
             )
         }
         return viewModel
+    }
+
+    // --- Back navigation ---
+
+    @Test
+    fun backButton_invokesOnBackClick() {
+        var backClicked = false
+        setContent(onBackClick = { backClicked = true })
+
+        composeTestRule.onNodeWithContentDescription("back icon")
+            .performClick()
+
+        assert(backClicked)
     }
 
     // --- Title input ---
@@ -139,17 +153,6 @@ class AddTaskScreenTest {
         composeTestRule.waitUntil(timeoutMillis = 3000) { backClicked }
         assert(backClicked)
         assert(fakeTaskRepo.insertTaskCalled)
-    }
-
-    // --- Back navigation ---
-
-    @Test
-    fun backButton_invokesOnBackClick() {
-        var backClicked = false
-        setContent(onBackClick = { backClicked = true })
-
-        composeTestRule.onNodeWithText("New task")
-            .assertExists()
     }
 
     // --- Default screen state ---

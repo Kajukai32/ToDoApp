@@ -39,7 +39,7 @@ fun MyTopBar(
                     .clickable(onClick = { onBackClick() })
                     .padding(horizontal = 12.dp),
                 painter = painterResource(R.drawable.ic_arrowback),
-                contentDescription = null
+                contentDescription = "back icon"
             )
         })
 

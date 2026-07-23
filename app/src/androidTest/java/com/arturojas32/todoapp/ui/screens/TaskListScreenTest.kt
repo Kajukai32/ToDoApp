@@ -78,6 +78,17 @@ class TaskListScreenTest {
     // --- Empty state ---
 
     @Test
+    fun backButton_invokesOnBackClick() {
+        var backClicked = false
+        setContent(onBackClick = { backClicked = true })
+
+        composeTestRule.onNodeWithContentDescription("back icon")
+            .performClick()
+
+        assert(backClicked)
+    }
+
+    @Test
     fun emptyTaskList_showsEmptyStateText() {
         setContent()
 
