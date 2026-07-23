@@ -62,7 +62,7 @@ class RegisterViewModel @Inject constructor(private val repo: AuthRepository) : 
             currentState.copy(newUserEmail = newValue)
         }
 
-
+        checkValidCredentials()
     }
 
     fun onPasswordValueChange(newValue: String) {
@@ -112,4 +112,4 @@ data class RegisterUiState(
     val newUserPassword: String = "",
     val isRegisterButtonEnabled: Boolean = false,
 
-)
+    )

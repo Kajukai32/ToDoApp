@@ -9,12 +9,12 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.arturojas32.todoapp.ui.FakeAuthRepository
-import com.arturojas32.todoapp.ui.viewmodels.LoginViewModel
+import com.arturojas32.todoapp.ui.viewmodels.RegisterViewModel
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class LoginScreenTest {
+class RegisterScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -27,15 +27,15 @@ class LoginScreenTest {
     }
 
     private fun setContent(
-        onLoginClick: () -> Unit = {},
-        onGoToRegisterScreen: () -> Unit = {}
-    ): LoginViewModel {
-        val viewModel = LoginViewModel(fakeAuthRepo)
+        onBackClick: () -> Unit = {},
+        onRegistered: () -> Unit = {}
+    ): RegisterViewModel {
+        val viewModel = RegisterViewModel(fakeAuthRepo)
         composeTestRule.setContent {
-            LoginScreen(
-                loginViewModel = viewModel,
-                onLoginClick = onLoginClick,
-                onGoToRegisterScreen = onGoToRegisterScreen
+            RegisterScreen(
+                registerViewModel = viewModel,
+                onBackClick = onBackClick,
+                onRegistered = onRegistered
             )
         }
         return viewModel
@@ -48,9 +48,9 @@ class LoginScreenTest {
         val vm = setContent()
 
         composeTestRule.onNodeWithText("Email")
-            .performTextInput("test@example.com")
+            .performTextInput("new@example.com")
 
-        assert(vm.loginScreenUiState.value.email == "test@example.com")
+        assert(vm.registerUiState.value.newUserEmail == "new@example.com")
     }
 
     @Test
@@ -60,103 +60,99 @@ class LoginScreenTest {
         composeTestRule.onNodeWithText("Password")
             .performTextInput("mypassword123")
 
-        assert(vm.loginScreenUiState.value.password == "mypassword123")
+        assert(vm.registerUiState.value.newUserPassword == "mypassword123")
     }
 
     // --- Button state reflects validation ---
 
     @Test
-    fun loginButton_disabled_initially() {
-        val vm = setContent()
-
-        assert(!vm.loginScreenUiState.value.isLoginButtonEnabled)
-
-        composeTestRule.onNodeWithText("Log in")
-            .assertIsNotEnabled()
+    fun registerButton_disabled_initially() {
+         val vm = setContent()
+        assert(!vm.registerUiState.value.isRegisterButtonEnabled)
     }
 
     @Test
-    fun loginButton_enabled_after_valid_input() {
+    fun registerButton_enabled_after_valid_input() {
         val vm = setContent()
 
         composeTestRule.onNodeWithText("Email")
-            .performTextInput("test@example.com")
+            .performTextInput("new@example.com")
         composeTestRule.onNodeWithText("Password")
             .performTextInput("password123")
 
-        composeTestRule.onNodeWithText("Log in")
+        composeTestRule.onNodeWithText("Create new user")
             .assertIsEnabled()
     }
 
     @Test
-    fun loginButton_disabled_after_clearing_email() {
+    fun registerButton_disabled_after_clearing_email() {
         val vm = setContent()
 
         composeTestRule.onNodeWithText("Email")
-            .performTextInput("test@example.com")
+            .performTextInput("new@example.com")
         composeTestRule.onNodeWithText("Password")
             .performTextInput("password123")
 
         composeTestRule.waitForIdle()
-        assert(vm.loginScreenUiState.value.isLoginButtonEnabled)
+        assert(vm.registerUiState.value.isRegisterButtonEnabled)
 
-        vm.onUserTextFieldValueChange("")
+        vm.onEmailValueChange("")
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithText("Log in")
+        composeTestRule.onNodeWithText("Create new user")
             .assertIsNotEnabled()
     }
 
-    // --- Login button click ---
+    // --- Register button click ---
 
     @Test
-    fun loginButton_click_triggersSignIn() {
-        fakeAuthRepo.signInResult = Result.success(Unit)
+    fun registerButton_click_triggersRegister() {
+        fakeAuthRepo.registerResult = Result.success(Unit)
         val vm = setContent()
 
         composeTestRule.onNodeWithText("Email")
-            .performTextInput("test@example.com")
+            .performTextInput("new@example.com")
         composeTestRule.onNodeWithText("Password")
             .performTextInput("password123")
 
-        composeTestRule.onNodeWithText("Log in")
+        composeTestRule.onNodeWithText("Create new user")
             .performClick()
 
         composeTestRule.waitUntil(timeoutMillis = 3000) {
-            fakeAuthRepo.signInCalled
+            fakeAuthRepo.registerCalled
         }
-        assert(fakeAuthRepo.lastEmail == "test@example.com")
+        assert(fakeAuthRepo.lastEmail == "new@example.com")
         assert(fakeAuthRepo.lastPassword == "password123")
     }
 
     // --- Navigation ---
 
     @Test
-    fun successfulLogin_invokesOnLoginClick() {
-        fakeAuthRepo.signInResult = Result.success(Unit)
-        var loginClicked = false
-        setContent(onLoginClick = { loginClicked = true })
+    fun successfulRegister_invokesOnRegistered() {
+        fakeAuthRepo.registerResult = Result.success(Unit)
+        var registered = false
+        setContent(onRegistered = { registered = true })
 
         composeTestRule.onNodeWithText("Email")
-            .performTextInput("test@example.com")
+            .performTextInput("new@example.com")
         composeTestRule.onNodeWithText("Password")
             .performTextInput("password123")
-        composeTestRule.onNodeWithText("Log in")
+        composeTestRule.onNodeWithText("Create new user")
             .performClick()
 
-        composeTestRule.waitUntil(timeoutMillis = 3000) { loginClicked }
-        assert(loginClicked)
+        composeTestRule.waitUntil(timeoutMillis = 3000) { registered }
+        assert(registered)
     }
 
     @Test
-    fun registerButton_invokesOnGoToRegisterScreen() {
-        var registerClicked = false
-        setContent(onGoToRegisterScreen = { registerClicked = true })
+    fun backButton_invokesOnBackClick() {
+        var backClicked = false
+        setContent(onBackClick = { backClicked = true })
 
-        composeTestRule.onNodeWithText("Register")
+        composeTestRule.onNodeWithText("Go back")
             .performClick()
 
-        assert(registerClicked)
+        assert(backClicked)
     }
 
     // --- Password visibility ---
@@ -165,35 +161,35 @@ class LoginScreenTest {
     fun passwordVisibility_icon_togglesState() {
         val vm = setContent()
 
-        assert(!vm.loginScreenUiState.value.passwordVisibility)
+        assert(vm.registerUiState.value.passwordVisibility)
 
         composeTestRule.onNodeWithContentDescription("password visibility clickable icon")
             .performClick()
 
-        assert(vm.loginScreenUiState.value.passwordVisibility)
+        assert(!vm.registerUiState.value.passwordVisibility)
 
         composeTestRule.onNodeWithContentDescription("password visibility clickable icon")
             .performClick()
 
-        assert(!vm.loginScreenUiState.value.passwordVisibility)
+        assert(vm.registerUiState.value.passwordVisibility)
     }
 
     // --- Error propagation ---
 
     @Test
-    fun failedLogin_showsErrorText() {
-        fakeAuthRepo.signInResult = Result.failure(Exception("Invalid credentials"))
-        setContent()
+    fun failedRegister_showsErrorText() {
+        fakeAuthRepo.registerResult = Result.failure(Exception("Email already in use"))
+        val vm = setContent()
 
-        composeTestRule.onNodeWithText("Email")
-            .performTextInput("test@example.com")
-        composeTestRule.onNodeWithText("Password")
-            .performTextInput("password123")
-        composeTestRule.onNodeWithText("Log in")
+        vm.onEmailValueChange("new@example.com")
+        vm.onPasswordValueChange("password123")
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Create new user").assertIsEnabled()
+        composeTestRule.onNodeWithText("Create new user")
             .performClick()
-
         composeTestRule.waitUntil(timeoutMillis = 3000) {
-            composeTestRule.onAllNodesWithText("Invalid credentials").fetchSemanticsNodes()
+            composeTestRule.onAllNodesWithText("Email already in use").fetchSemanticsNodes()
                 .isNotEmpty()
         }
     }
@@ -202,20 +198,20 @@ class LoginScreenTest {
 
     @Test
     fun fields_disabled_during_loading() {
-        fakeAuthRepo.signInDelay = 2000
-        fakeAuthRepo.signInResult = Result.success(Unit)
+        fakeAuthRepo.registerDelay = 2000
+        fakeAuthRepo.registerResult = Result.success(Unit)
         val vm = setContent()
 
         composeTestRule.onNodeWithText("Email")
-            .performTextInput("test@example.com")
+            .performTextInput("new@example.com")
         composeTestRule.onNodeWithText("Password")
             .performTextInput("password123")
 
-        composeTestRule.onNodeWithText("Log in")
+        composeTestRule.onNodeWithText("Create new user")
             .performClick()
 
         composeTestRule.waitUntil(timeoutMillis = 3000) {
-            vm.loginScreenUiState.value.loading
+            vm.registerUiState.value.loading
         }
         composeTestRule.waitForIdle()
 

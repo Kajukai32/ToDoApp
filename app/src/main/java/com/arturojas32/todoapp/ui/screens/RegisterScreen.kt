@@ -84,6 +84,13 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
+            registerUiState.error?.let { error ->
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12),
