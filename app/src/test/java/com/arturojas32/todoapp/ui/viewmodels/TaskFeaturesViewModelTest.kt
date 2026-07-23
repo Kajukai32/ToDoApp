@@ -2,7 +2,7 @@ package com.arturojas32.todoapp.ui.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import com.arturojas32.todoapp.data.local.repository.TaskRepositoryImpl
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepository
 import com.arturojas32.todoapp.domain.model.Task
 import com.arturojas32.todoapp.utils.SyncManager

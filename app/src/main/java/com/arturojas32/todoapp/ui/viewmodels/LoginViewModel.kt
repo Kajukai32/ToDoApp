@@ -2,9 +2,9 @@ package com.arturojas32.todoapp.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
+import com.arturojas32.todoapp.domain.model.AuthUser
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.arturojas32.todoapp.utils.emailAndPasswordValidator
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +32,7 @@ class LoginViewModel @Inject constructor(
     val event: SharedFlow<Event> = _event.asSharedFlow()
 
 
-    val user: StateFlow<FirebaseUser?> = repo.authState.stateIn(
+    val user: StateFlow<AuthUser?> = repo.authState.stateIn(
         scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = null
     )
     private val _loginScreenUiState = MutableStateFlow<LoginScreenUiState>(

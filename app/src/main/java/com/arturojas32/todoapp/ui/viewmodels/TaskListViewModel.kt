@@ -2,7 +2,7 @@ package com.arturojas32.todoapp.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.arturojas32.todoapp.domain.model.Task
 import com.arturojas32.todoapp.domain.repository.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

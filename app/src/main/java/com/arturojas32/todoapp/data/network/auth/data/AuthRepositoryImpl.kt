@@ -1,5 +1,7 @@
 package com.arturojas32.todoapp.data.network.auth.data
 
+import com.arturojas32.todoapp.domain.model.AuthUser
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.awaitClose
@@ -15,12 +17,12 @@ class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth
 ) : AuthRepository {
 
-    override val authState: Flow<FirebaseUser?> = callbackFlow {
+    override val authState: Flow<AuthUser?> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { fa ->
-            trySend(fa.currentUser)
+            trySend(fa.currentUser?.toAuthUser())
         }
         auth.addAuthStateListener(listener)
-        trySend(auth.currentUser)
+        trySend(auth.currentUser?.toAuthUser())
         awaitClose { auth.removeAuthStateListener(listener) }
     }.distinctUntilChanged()
 
@@ -33,28 +35,27 @@ class AuthRepositoryImpl @Inject constructor(
             Unit
         }
 
-
     override suspend fun register(
         email: String,
         password: String
     ): Result<Unit> =
         runCatching {
-            //devuelve un Task<AuthResult>, como no se resuelve de manera inmediata el await lo
-            // convierte en una funcion suspendida que debe correr en un corutina, si
-            // el registro fue exitoso devuelve el result pero si no devuleve una exception que es atrapada por el runCatching
             auth.createUserWithEmailAndPassword(email, password).await()
             Unit
         }
-
 
     override fun signOut() {
         auth.signOut()
     }
 
-    override fun currentUser(): FirebaseUser? {
-    //si hay un user loggeado devuelve un fbUser sino null
-        return auth.currentUser
+    override fun currentUser(): AuthUser? {
+        return auth.currentUser?.toAuthUser()
     }
 
-
+    private fun FirebaseUser.toAuthUser() = AuthUser(
+        uid = uid,
+        email = email,
+        displayName = displayName,
+        photoUrl = photoUrl?.toString()
+    )
 }
