@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.arturojas32.todoapp.domain.repository.AuthRepository
-import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepository
+import com.arturojas32.todoapp.domain.repository.RemoteDbRepository
 import com.arturojas32.todoapp.domain.model.Task
 import com.arturojas32.todoapp.domain.repository.TaskRepository
 import com.arturojas32.todoapp.navigation.UpdateTaskRoute
@@ -82,7 +82,7 @@ class TaskFeaturesViewModel @Inject constructor(
     fun onSaveTaskClick() {
         viewModelScope.launch {
             val taskToSave = _taskState.value.task.copy(
-                uId = authRepo.currentUser()!!.uid,
+                uId = authRepo.currentUser()!!.uId,
                 isSynced = false,
                 lastModified = System.currentTimeMillis()
             )

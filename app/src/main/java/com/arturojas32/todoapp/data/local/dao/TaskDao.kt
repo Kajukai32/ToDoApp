@@ -16,6 +16,8 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks WHERE isDeleted = 0 AND uId = :uId ORDER BY id DESC")
     fun getAllTasks(uId: String): Flow<List<TaskEntity>>
+    @Query("SELECT * FROM tasks ORDER BY id DESC")
+    fun getAllTasks1(): Flow<List<TaskEntity>>
     @Delete
     suspend fun deleteTask(taskToDelete: TaskEntity)
 

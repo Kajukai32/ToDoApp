@@ -43,7 +43,7 @@ class FakeAuthRepository : AuthRepository {
     override fun signOut() {}
 
     override fun currentUser(): AuthUser? =
-        fakeUid?.let { AuthUser(uid = it) }
+        fakeUid?.let { AuthUser(uId = it) }
 
     fun reset() {
         signInResult = Result.success(Unit)

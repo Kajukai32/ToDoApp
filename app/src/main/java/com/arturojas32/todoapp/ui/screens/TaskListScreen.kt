@@ -170,7 +170,7 @@ fun TaskListScreen(
 
                         MyTaskItem(
                             task = task,
-                            onTaskItemClick = { taskId -> onTaskItemClick(taskId) },
+                            onTaskItemClick = { taskId -> onTaskItemClick(taskId)},
                             onCheckedChangeClick = { taskId ->
                                 taskFeaturesViewModel.onIsDoneCheckedChange(
                                     taskId = taskId

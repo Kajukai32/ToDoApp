@@ -1,9 +1,9 @@
 package com.arturojas32.todoapp.data.network.auth.data
 
+import com.arturojas32.todoapp.data.mappers.toAuthUser
 import com.arturojas32.todoapp.domain.model.AuthUser
 import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -51,11 +51,4 @@ class AuthRepositoryImpl @Inject constructor(
     override fun currentUser(): AuthUser? {
         return auth.currentUser?.toAuthUser()
     }
-
-    private fun FirebaseUser.toAuthUser() = AuthUser(
-        uid = uid,
-        email = email,
-        displayName = displayName,
-        photoUrl = photoUrl?.toString()
-    )
 }

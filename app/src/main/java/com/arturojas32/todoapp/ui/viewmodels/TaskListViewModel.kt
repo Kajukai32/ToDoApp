@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.arturojas32.todoapp.domain.model.Task
 import com.arturojas32.todoapp.domain.repository.TaskRepository
+import com.arturojas32.todoapp.utils.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,17 +16,19 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskListViewModel @Inject constructor(
     private val repo: TaskRepository,
-    private val authRepo: AuthRepository
+    private val authRepo: AuthRepository,
+    private val syncManager: SyncManager
 ) : ViewModel() {
 
     private val _tasksListUiState = MutableStateFlow<TaskListUiSate>(TaskListUiSate())
     val taskListUiState: StateFlow<TaskListUiSate> = _tasksListUiState
-    private val uId: String? get() = authRepo.currentUser()?.uid
+    private val uId: String? get() = authRepo.currentUser()?.uId
 
     init {
+        syncManager.startSync()
         viewModelScope.launch {
-
             repo.getAllTasks(uId!!).collect { tasksFromDB ->
+//            repo.getAllTasks1().collect { tasksFromDB ->
                 _tasksListUiState.update { currentState ->
 
                     val sortedList = when (currentState.sortedBy) {
@@ -84,7 +87,6 @@ class TaskListViewModel @Inject constructor(
 data class TaskListUiSate(
     val rawTaskList: List<Task> = listOf(),
     val tasksState: List<Task> = listOf(),
-//    val filteredTasksState: List<Task> = listOf(),
     val sortedBy: SortedBy = SortedBy.DEFAULT,
     val stringToSearch: String = ""
 )
