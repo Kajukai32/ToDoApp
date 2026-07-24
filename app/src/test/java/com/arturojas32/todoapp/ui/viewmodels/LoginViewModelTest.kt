@@ -248,7 +248,7 @@ class LoginViewModelTest {
         val vm = createViewModel()
         assertNull(vm.user.value)
 
-        val fakeUser = AuthUser(uid = "test-uid")
+        val fakeUser = AuthUser(uId = "test-uid")
         authStateFlow.value = fakeUser
         assertEquals(fakeUser, vm.user.value)
     }

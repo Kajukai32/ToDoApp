@@ -18,4 +18,4 @@ data class TaskEntity(
     val isSynced: Boolean = false,
     val isDeleted: Boolean = false,
 
-)
+    )

@@ -3,6 +3,7 @@ package com.arturojas32.todoapp.ui.viewmodels
 import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.arturojas32.todoapp.domain.model.Task
 import com.arturojas32.todoapp.domain.repository.TaskRepository
+import com.arturojas32.todoapp.utils.SyncManager
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,7 @@ class TaskListViewModelTest {
     private val testDispatcher = UnconfinedTestDispatcher()
     private lateinit var repo: TaskRepository
     private lateinit var authRepo: AuthRepository
+    private lateinit var syncManager: SyncManager
     private val tasksFlow = MutableStateFlow<List<Task>>(emptyList())
 
     @Before
@@ -29,8 +31,9 @@ class TaskListViewModelTest {
         Dispatchers.setMain(testDispatcher)
         repo = mockk(relaxed = true)
         authRepo = mockk(relaxed = true)
+        syncManager = mockk(relaxed = true)
 
-        every { authRepo.currentUser() } returns mockk { every { uid } returns "test_user" }
+        every { authRepo.currentUser() } returns mockk { every { uId } returns "test_user" }
         every { repo.getAllTasks("test_user") } returns tasksFlow
     }
 
@@ -54,7 +57,7 @@ class TaskListViewModelTest {
         lastModified = 0L
     )
 
-    private fun createViewModel() = TaskListViewModel(repo, authRepo)
+    private fun createViewModel() = TaskListViewModel(repo, authRepo, syncManager)
 
     // --- Init / Collection ---
 

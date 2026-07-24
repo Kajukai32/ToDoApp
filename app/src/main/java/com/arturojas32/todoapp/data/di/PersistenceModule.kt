@@ -6,8 +6,8 @@ import com.arturojas32.todoapp.data.local.dao.TaskDao
 import com.arturojas32.todoapp.data.local.database.TaskDataBase
 import com.arturojas32.todoapp.data.local.repository.TaskRepositoryImpl
 import com.arturojas32.todoapp.domain.repository.AuthRepository
-import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepository
 import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepositoryImpl
+import com.arturojas32.todoapp.domain.repository.RemoteDbRepository
 import com.arturojas32.todoapp.domain.repository.TaskRepository
 import dagger.Module
 import dagger.Provides
