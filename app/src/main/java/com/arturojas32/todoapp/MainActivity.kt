@@ -6,9 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.arturojas32.todoapp.navigation.NavigationWrapper
 import com.arturojas32.todoapp.ui.theme.ToDoAppTheme
-import com.arturojas32.todoapp.utils.SyncManager
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
