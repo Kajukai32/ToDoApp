@@ -281,6 +281,7 @@ class TaskListScreenTest {
     }
 
     // --- Checkbox toggle ---
+    @Test
     fun ff() {
         fakeTaskRepo.emitTasks(listOf(sampleTask(id = 1, title = "My task", isDone = false)))
         val (_, featuresVm) = setContent()
