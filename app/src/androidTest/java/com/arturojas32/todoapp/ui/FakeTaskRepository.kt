@@ -4,6 +4,7 @@ import com.arturojas32.todoapp.domain.model.Task
 import com.arturojas32.todoapp.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 
 class FakeTaskRepository : TaskRepository {
@@ -18,7 +19,7 @@ class FakeTaskRepository : TaskRepository {
 
     override fun getAllTasks(uId: String): Flow<List<Task>> = tasks
     override fun getAllTasks1(): Flow<List<Task>> {
-        TODO("Not yet implemented")
+        return flowOf(tasks.value)
     }
 
     override suspend fun insertTask(task: Task) {
