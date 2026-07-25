@@ -42,7 +42,7 @@ class TaskListScreenTest {
         onAddTaskClick: () -> Unit = {},
         onTaskItemClick: (Int) -> Unit = {}
     ): Pair<TaskListViewModel, TaskFeaturesViewModel> {
-        val taskListViewModel = TaskListViewModel(fakeTaskRepo, fakeAuthRepo)
+        val taskListViewModel = TaskListViewModel(fakeTaskRepo, fakeAuthRepo, syncManager)
         val taskFeaturesViewModel = TaskFeaturesViewModel(
             repo = fakeTaskRepo,
             savedStateHandle = androidx.lifecycle.SavedStateHandle(),
@@ -256,10 +256,32 @@ class TaskListScreenTest {
         assert(clickedTaskId == 42)
     }
 
-    // --- Checkbox toggle ---
+    // --- More options menu ---
 
     @Test
-    fun checkboxClick_togglesIsDone() {
+    fun moreOptionsIcon_exists() {
+        setContent()
+
+        composeTestRule.onNodeWithContentDescription("More options")
+            .assertExists()
+    }
+
+    // --- Log out ---
+
+    @Test
+    fun logOutOption_clearsUser() {
+        val (vm, _) = setContent()
+
+        assert(fakeAuthRepo.currentUser() != null)
+
+        vm.onLogOutOptionClick()
+        composeTestRule.waitForIdle()
+
+        assert(fakeAuthRepo.currentUser() == null)
+    }
+
+    // --- Checkbox toggle ---
+    fun ff() {
         fakeTaskRepo.emitTasks(listOf(sampleTask(id = 1, title = "My task", isDone = false)))
         val (_, featuresVm) = setContent()
 

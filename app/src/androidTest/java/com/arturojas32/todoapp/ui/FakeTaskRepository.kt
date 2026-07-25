@@ -17,6 +17,9 @@ class FakeTaskRepository : TaskRepository {
     }
 
     override fun getAllTasks(uId: String): Flow<List<Task>> = tasks
+    override fun getAllTasks1(): Flow<List<Task>> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun insertTask(task: Task) {
         insertTaskCalled = true

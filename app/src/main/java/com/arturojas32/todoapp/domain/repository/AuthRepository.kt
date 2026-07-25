@@ -11,7 +11,14 @@ interface AuthRepository {
 
     suspend fun register(email: String, password: String): Result<Unit>
 
-    fun signOut()
+    suspend fun signOut()
 
     fun currentUser(): AuthUser?
+
+    suspend fun saveUserId(userId: String)
+    suspend fun saveThemeMode(themeMode: Boolean)
+
+    fun getUserId(): Flow<String>
+    fun getThemeMode(): Flow<Boolean>
+
 }

@@ -1,5 +1,6 @@
 package com.arturojas32.todoapp.data.network.auth.data
 
+import com.arturojas32.todoapp.data.local.database.DataStoreManager
 import com.arturojas32.todoapp.data.mappers.toAuthUser
 import com.arturojas32.todoapp.domain.model.AuthUser
 import com.arturojas32.todoapp.domain.repository.AuthRepository
@@ -14,7 +15,8 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val dataStoreManager: DataStoreManager
 ) : AuthRepository {
 
     override val authState: Flow<AuthUser?> = callbackFlow {
@@ -44,11 +46,28 @@ class AuthRepositoryImpl @Inject constructor(
             Unit
         }
 
-    override fun signOut() {
+    override suspend fun signOut() {
         auth.signOut()
+        dataStoreManager.clearUserId()
     }
 
     override fun currentUser(): AuthUser? {
         return auth.currentUser?.toAuthUser()
+    }
+
+    override suspend fun saveUserId(userId: String) {
+        dataStoreManager.saveUserId(userId)
+    }
+
+    override suspend fun saveThemeMode(themeMode: Boolean) {
+        dataStoreManager.saveThemeModeKey(themeMode)
+    }
+
+    override fun getUserId(): Flow<String> {
+        return dataStoreManager.getUserId()
+    }
+
+    override fun getThemeMode(): Flow<Boolean> {
+        return dataStoreManager.getDarkModePref()
     }
 }

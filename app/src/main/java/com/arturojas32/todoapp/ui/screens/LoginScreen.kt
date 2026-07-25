@@ -57,7 +57,7 @@ fun LoginScreen(
             animation = tween(2000), repeatMode = RepeatMode.Reverse
         )
     )
-    val animatedButtonBorderWidtSize: Dp by infiniteTransition.animateValue(
+    val animatedButtonBorderWidthSize: Dp by infiniteTransition.animateValue(
         initialValue = 0.8.dp,
         targetValue = 3.0.dp,
         typeConverter = Dp.VectorConverter,
@@ -136,7 +136,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(
                     width = if (!loginScreenUIState.loading) {
-                        animatedButtonBorderWidtSize
+                        animatedButtonBorderWidthSize
                     } else {
                         1.dp
                     },

@@ -1,7 +1,8 @@
 package com.arturojas32.todoapp.data.di
 
-import com.arturojas32.todoapp.domain.repository.AuthRepository
+import com.arturojas32.todoapp.data.local.database.DataStoreManager
 import com.arturojas32.todoapp.data.network.auth.data.AuthRepositoryImpl
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -22,5 +23,13 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun providesAuthRepository(auth: FirebaseAuth): AuthRepository = AuthRepositoryImpl(auth = auth)
+    fun providesAuthRepository(
+        auth: FirebaseAuth,
+        dataStoreManager: DataStoreManager
+    ): AuthRepository = AuthRepositoryImpl(
+        auth = auth,
+        dataStoreManager = dataStoreManager
+    )
+
+
 }
