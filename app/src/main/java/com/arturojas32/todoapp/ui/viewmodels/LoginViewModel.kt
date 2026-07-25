@@ -112,9 +112,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun onStayLoggedValueChange() {
+    fun onStayLoggedValueChange(newValue: Boolean) {
         _loginScreenUiState.update { currentState ->
-            currentState.copy(stayLoggedValue = !currentState.stayLoggedValue)
+            currentState.copy(stayLoggedValue = newValue)
         }
     }
 }

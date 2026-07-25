@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arturojas32.todoapp.ui.components.MyCheckBoxWithText
 import com.arturojas32.todoapp.ui.components.MyEmailTextField
 import com.arturojas32.todoapp.ui.components.MyPasswordTextField
 import com.arturojas32.todoapp.ui.viewmodels.LoginViewModel
@@ -106,21 +107,12 @@ fun LoginScreen(
                 onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
                 isEnabled = !loginScreenUIState.loading
             )
+            MyCheckBoxWithText(
+                isChecked = loginScreenUIState.stayLoggedValue,
+                onCheckedValueChange = {newValue -> loginViewModel.onStayLoggedValueChange(newValue)},
+                text = "Stay logged in"
+            )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = loginScreenUIState.stayLoggedValue,
-                    onCheckedChange = { loginViewModel.onStayLoggedValueChange() },
-                    enabled = true,
-                    colors = CheckboxDefaults.colors()
-                )
-                Text(
-                    text = "Stay logged in",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontStyle = FontStyle.Italic,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
             Spacer(modifier = modifier.weight(0.7f))
 
 

@@ -1,5 +1,6 @@
 package com.arturojas32.todoapp.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,10 +21,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arturojas32.todoapp.ui.components.MyCheckBoxWithText
 import com.arturojas32.todoapp.ui.components.MyEmailTextField
 import com.arturojas32.todoapp.ui.components.MyPasswordTextField
 import com.arturojas32.todoapp.ui.components.MyTopBar
@@ -63,7 +66,8 @@ fun RegisterScreen(
                 .fillMaxSize()
                 .imePadding()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
 
             Spacer(modifier = Modifier.weight(1.75f))
@@ -81,7 +85,16 @@ fun RegisterScreen(
                 isEnabled = !registerUiState.loading
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            MyCheckBoxWithText(
+                isChecked = registerUiState.stayLoggedValue,
+                onCheckedValueChange = { newValue ->
+                    registerViewModel.onValueChangeStayLogged(
+                        newValue
+                    )
+                },
+                text = "Stay logged in"
+            )
+            Spacer(modifier = Modifier.weight(1.3f))
 
             registerUiState.error?.let { error ->
                 Text(
