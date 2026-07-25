@@ -60,7 +60,8 @@ fun TaskListScreen(
 
     val taskListUiState by taskListViewModel.taskListUiState.collectAsStateWithLifecycle()
     var showDialog by remember { mutableStateOf(false) }
-    var isExpanded by remember { mutableStateOf(false) }
+    var isMenuExpanded by remember { mutableStateOf(false) }
+    var isSortExpanded by remember { mutableStateOf(false) }
     var isSearchBarVisible by remember { mutableStateOf(false) }
     val snackBarState = remember { SnackbarHostState() }
     val scope: CoroutineScope = rememberCoroutineScope()
@@ -74,7 +75,7 @@ fun TaskListScreen(
                     Box(
                         modifier = Modifier
                             .padding(end = 12.dp)
-                            .clickable(onClick = { isExpanded = !isExpanded }),
+                            .clickable(onClick = { isMenuExpanded = !isMenuExpanded }),
                         contentAlignment = Alignment.Center
                     ) {
                         Row() {
@@ -88,12 +89,28 @@ fun TaskListScreen(
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
                                 modifier = Modifier.size(30.dp),
-                                painter = painterResource(R.drawable.ic_sort_by),
-                                contentDescription = "Clickable sort tasks icon"
+                                painter = painterResource(R.drawable.ic_more_vert),
+                                contentDescription = "More options"
                             )
                             DropdownMenu(
-                                expanded = isExpanded,
-                                onDismissRequest = { isExpanded = false }
+                                expanded = isMenuExpanded,
+                                onDismissRequest = { isMenuExpanded = false }
+                            ) {
+                                MyDropDownItem(
+                                    optionText = "Sort by",
+                                    onClick = { isSortExpanded = true }
+                                )
+                                MyDropDownItem(
+                                    optionText = "Log out",
+                                    onClick = {
+                                        taskListViewModel.onLogOutOptionClick()
+                                        isMenuExpanded = false
+                                    }
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = isSortExpanded,
+                                onDismissRequest = { isSortExpanded = false }
                             ) {
                                 SortedBy.entries.forEach { option ->
                                     MyDropDownItem(
@@ -103,7 +120,8 @@ fun TaskListScreen(
                                         },
                                         onClick = {
                                             taskListViewModel.onSortedByChange(sortedByNewValue = option)
-                                            isExpanded = false
+                                            isSortExpanded = false
+                                            isMenuExpanded = false
                                         })
                                 }
                             }

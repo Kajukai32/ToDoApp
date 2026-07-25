@@ -89,6 +89,7 @@ class LoginViewModel @Inject constructor(
                     currentState.copy(loading = false)
                 }
                 _event.emit(Event.Success)
+                onLoginEventSuccess()
             } else {
 
                 _loginScreenUiState.update { currentState ->
@@ -96,6 +97,16 @@ class LoginViewModel @Inject constructor(
                         loading = false,
                         error = r.exceptionOrNull()?.toReadable()
                     )
+                }
+            }
+        }
+    }
+
+    private fun onLoginEventSuccess() {
+        if (_loginScreenUiState.value.stayLoggedValue) {
+            viewModelScope.launch {
+                repo.currentUser()?.let { user ->
+                    repo.saveUserId(userId = user.uId)
                 }
             }
         }
@@ -111,7 +122,6 @@ class LoginViewModel @Inject constructor(
 private fun Throwable.toReadable(): String {
     return (this.message ?: "Unexpected error. Try again later")
 }
-
 
 
 data class LoginScreenUiState(

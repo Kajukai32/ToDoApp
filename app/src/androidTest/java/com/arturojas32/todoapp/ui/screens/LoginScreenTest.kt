@@ -217,7 +217,6 @@ class LoginScreenTest {
         composeTestRule.waitUntil(timeoutMillis = 3000) {
             vm.loginScreenUiState.value.loading
         }
-        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText("Email")
             .assertIsNotEnabled()

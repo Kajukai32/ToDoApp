@@ -59,6 +59,11 @@ class TaskListViewModel @Inject constructor(
 
     }
 
+    fun onLogOutOptionClick() {
+        viewModelScope.launch { authRepo.signOut() }
+
+    }
+
     fun onSearchFieldValueChange(newValue: String) {
 
         _tasksListUiState.update { currentState ->
@@ -91,4 +96,4 @@ data class TaskListUiSate(
     val stringToSearch: String = ""
 )
 
-enum class SortedBy { COMPLETED, DEFAULT }
+enum class SortedBy { COMPLETED, DEFAULT}

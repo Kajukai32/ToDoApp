@@ -109,6 +109,9 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
 
+    //data-store
+    implementation(libs.data.preferences)
+
 }
 
 

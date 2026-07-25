@@ -5,6 +5,7 @@ import com.arturojas32.todoapp.domain.repository.AuthRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 
 class FakeAuthRepository : AuthRepository {
 
@@ -20,6 +21,7 @@ class FakeAuthRepository : AuthRepository {
     var lastPassword: String? = null
 
     var fakeUid: String? = null
+    var signOutCalled: Boolean = false
 
     private val _authState = MutableStateFlow<AuthUser?>(null)
     override val authState: Flow<AuthUser?> = _authState
@@ -40,10 +42,29 @@ class FakeAuthRepository : AuthRepository {
         return registerResult
     }
 
-    override fun signOut() {}
+    override suspend fun signOut() {
+        signOutCalled = true
+        fakeUid = null
+    }
 
     override fun currentUser(): AuthUser? =
         fakeUid?.let { AuthUser(uId = it) }
+
+    override suspend fun saveUserId(userId: String) {
+
+    }
+
+    override suspend fun saveThemeMode(themeMode: Boolean) {
+
+    }
+
+    override fun getUserId(): Flow<String> {
+        return flowOf<String>("false")
+    }
+
+    override fun getThemeMode(): Flow<Boolean> {
+        return flowOf<Boolean>(false)
+    }
 
     fun reset() {
         signInResult = Result.success(Unit)
@@ -55,5 +76,6 @@ class FakeAuthRepository : AuthRepository {
         lastEmail = null
         lastPassword = null
         fakeUid = null
+        signOutCalled = false
     }
 }
