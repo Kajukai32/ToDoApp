@@ -2,6 +2,7 @@ package com.arturojas32.todoapp.ui.screens
 
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -172,6 +173,44 @@ class RegisterScreenTest {
             .performClick()
 
         assert(vm.registerUiState.value.passwordVisibility)
+    }
+
+    // --- Stay logged in ---
+
+    @Test
+    fun stayLoggedIn_toggle_togglesState() {
+        val vm = setContent()
+
+        assert(vm.registerUiState.value.stayLoggedValue)
+
+        composeTestRule.onNode(isToggleable())
+            .performClick()
+
+        assert(!vm.registerUiState.value.stayLoggedValue)
+
+        composeTestRule.onNode(isToggleable())
+            .performClick()
+
+        assert(vm.registerUiState.value.stayLoggedValue)
+    }
+
+    @Test
+    fun successfulRegister_savesUserId() {
+        fakeAuthRepo.registerResult = Result.success(Unit)
+        fakeAuthRepo.fakeUid = "test-uid-123"
+        val vm = setContent()
+
+        vm.onEmailValueChange("new@example.com")
+        vm.onPasswordValueChange("password123")
+
+        composeTestRule.onNodeWithText("Create new user")
+            .performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 3000) {
+            fakeAuthRepo.registerCalled
+        }
+        composeTestRule.waitForIdle()
+        assert(fakeAuthRepo.lastEmail == "new@example.com")
     }
 
     // --- Error propagation ---

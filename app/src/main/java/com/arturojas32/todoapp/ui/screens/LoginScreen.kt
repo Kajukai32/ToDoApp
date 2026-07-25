@@ -21,8 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -32,11 +30,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arturojas32.todoapp.ui.components.MyCheckBoxWithText
 import com.arturojas32.todoapp.ui.components.MyEmailTextField
 import com.arturojas32.todoapp.ui.components.MyPasswordTextField
 import com.arturojas32.todoapp.ui.viewmodels.LoginViewModel
@@ -106,21 +104,12 @@ fun LoginScreen(
                 onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
                 isEnabled = !loginScreenUIState.loading
             )
+            MyCheckBoxWithText(
+                isChecked = loginScreenUIState.stayLoggedValue,
+                onCheckedValueChange = {newValue -> loginViewModel.onStayLoggedValueChange(newValue)},
+                text = "Stay logged in"
+            )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = loginScreenUIState.stayLoggedValue,
-                    onCheckedChange = { loginViewModel.onStayLoggedValueChange() },
-                    enabled = true,
-                    colors = CheckboxDefaults.colors()
-                )
-                Text(
-                    text = "Stay logged in",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontStyle = FontStyle.Italic,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
             Spacer(modifier = modifier.weight(0.7f))
 
 

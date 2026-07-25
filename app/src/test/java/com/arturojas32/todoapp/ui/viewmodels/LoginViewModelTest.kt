@@ -154,10 +154,10 @@ class LoginViewModelTest {
         val vm = createViewModel()
         assertTrue(vm.loginScreenUiState.value.stayLoggedValue)
 
-        vm.onStayLoggedValueChange()
+        vm.onStayLoggedValueChange(false)
         assertFalse(vm.loginScreenUiState.value.stayLoggedValue)
 
-        vm.onStayLoggedValueChange()
+        vm.onStayLoggedValueChange(true)
         assertTrue(vm.loginScreenUiState.value.stayLoggedValue)
     }
 

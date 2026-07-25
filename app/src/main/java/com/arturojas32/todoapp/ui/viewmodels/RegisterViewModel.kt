@@ -46,6 +46,7 @@ class RegisterViewModel @Inject constructor(private val repo: AuthRepository) : 
                     currentState.copy(loading = false, error = null)
                 }
                 _event.emit(RegisterEvent.Success)
+                onRegisterEventSuccess()
             } else {
                 _registerUiState.update { currentState ->
                     currentState.copy(loading = false, error = r.exceptionOrNull()?.toReadable())
@@ -92,6 +93,22 @@ class RegisterViewModel @Inject constructor(private val repo: AuthRepository) : 
         }
     }
 
+    fun onValueChangeStayLogged(newValue: Boolean) {
+        _registerUiState.update { currentState ->
+            currentState.copy(stayLoggedValue = newValue)
+        }
+    }
+
+    private fun onRegisterEventSuccess() {
+        if (_registerUiState.value.stayLoggedValue) {
+            viewModelScope.launch {
+                repo.currentUser()?.let { user ->
+                    repo.saveUserId(userId = user.uId)
+                }
+            }
+        }
+    }
+
 
 }
 
@@ -111,5 +128,6 @@ data class RegisterUiState(
     val passwordVisibility: Boolean = true,
     val newUserPassword: String = "",
     val isRegisterButtonEnabled: Boolean = false,
+    val stayLoggedValue: Boolean = true
 
-    )
+)
