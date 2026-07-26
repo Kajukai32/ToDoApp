@@ -4,6 +4,7 @@ import com.arturojas32.todoapp.data.local.database.DataStoreManager
 import com.arturojas32.todoapp.data.mappers.toAuthUser
 import com.arturojas32.todoapp.domain.model.AuthUser
 import com.arturojas32.todoapp.domain.repository.AuthRepository
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -59,6 +60,19 @@ class AuthRepositoryImpl @Inject constructor(
             auth.sendPasswordResetEmail(normalizedEmail).await()
             Unit
         }
+    }
+
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String
+    ): Result<Unit> = runCatching {
+        val user = auth.currentUser
+            ?: throw IllegalStateException("No authenticated user")
+
+        val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+        user.reauthenticate(credential).await()
+        user.updatePassword(newPassword).await()
+        Unit
     }
 
     override fun currentUser(): AuthUser? {

@@ -64,9 +64,17 @@ fun ChangePasswordScreen(
                     onNavigateToLoginAndResetBackStack()
                 }
 
+                is ForgotPasswordEvent.PasswordChanged -> {
+                    Toast.makeText(
+                        context,
+                        "Password changed successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    onBackClick()
+                }
+
                 is ForgotPasswordEvent.ShowMessage -> {
                     Toast.makeText(context, eff.message, Toast.LENGTH_SHORT).show()
-
                 }
             }
         }
@@ -149,7 +157,12 @@ fun ChangePasswordScreen(
             MyAnimatedConfirmButton(
                 isLoading = uiState.value.loading,
                 isButtonEnabled = uiState.value.enableConfirmButton,
-                onConfirmClick = { vm.sendReset() },
+                onConfirmClick = {
+                    when (mode) {
+                        PasswordMode.RESET -> vm.sendReset()
+                        PasswordMode.CHANGE -> vm.changePassword()
+                    }
+                },
                 text = buttonText
             )
         }

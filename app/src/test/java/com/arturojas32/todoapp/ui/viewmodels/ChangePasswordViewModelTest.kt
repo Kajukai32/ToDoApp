@@ -385,4 +385,137 @@ class ChangePasswordViewModelTest {
         vm.sendReset()
         assertNull(vm.forgotPasswordUiState.value.error)
     }
+
+    // --- changePassword ---
+
+    @Test
+    fun `changePassword shows error with short current password`() {
+        val vm = createViewModel()
+        vm.setMode(PasswordMode.CHANGE)
+        vm.onEmailValueChange("test@example.com")
+        vm.onCurrentPasswordFieldValueChange("short")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+
+        vm.changePassword()
+
+        assertEquals("Passwords must be at least 9 characters", vm.forgotPasswordUiState.value.error)
+    }
+
+    @Test
+    fun `changePassword shows error with short new password`() {
+        val vm = createViewModel()
+        vm.setMode(PasswordMode.CHANGE)
+        vm.onEmailValueChange("test@example.com")
+        vm.onCurrentPasswordFieldValueChange("password123")
+        vm.onNewPasswordFieldValueChange("short")
+
+        vm.changePassword()
+
+        assertEquals("Passwords must be at least 9 characters", vm.forgotPasswordUiState.value.error)
+    }
+
+    @Test
+    fun `changePassword calls repository with correct passwords`() = runTest {
+        coEvery { authRepo.changePassword(any(), any()) } returns Result.success(Unit)
+        val vm = createViewModel()
+        vm.setMode(PasswordMode.CHANGE)
+        vm.onEmailValueChange("test@example.com")
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+
+        vm.changePassword()
+
+        coVerify { authRepo.changePassword("oldpassword123", "newpassword123") }
+    }
+
+    @Test
+    fun `changePassword emits PasswordChanged on success`() = runTest {
+        coEvery { authRepo.changePassword(any(), any()) } returns Result.success(Unit)
+        val vm = createViewModel()
+        vm.setMode(PasswordMode.CHANGE)
+        vm.onEmailValueChange("test@example.com")
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+
+        vm.events.test {
+            vm.changePassword()
+
+            val msg = awaitItem()
+            assertTrue(msg is ForgotPasswordEvent.ShowMessage)
+
+            val changedEvent = awaitItem()
+            assertTrue(changedEvent is ForgotPasswordEvent.PasswordChanged)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        assertFalse(vm.forgotPasswordUiState.value.loading)
+        assertNull(vm.forgotPasswordUiState.value.error)
+    }
+
+    @Test
+    fun `changePassword sets error on failure`() = runTest {
+        coEvery { authRepo.changePassword(any(), any()) } returns Result.failure(
+            Exception("Wrong password")
+        )
+        val vm = createViewModel()
+        vm.setMode(PasswordMode.CHANGE)
+        vm.onEmailValueChange("test@example.com")
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+
+        vm.changePassword()
+
+        assertEquals("Wrong password", vm.forgotPasswordUiState.value.error)
+        assertFalse(vm.forgotPasswordUiState.value.loading)
+    }
+
+    @Test
+    fun `changePassword with null exception message shows default error`() = runTest {
+        coEvery { authRepo.changePassword(any(), any()) } returns Result.failure(Exception())
+        val vm = createViewModel()
+        vm.setMode(PasswordMode.CHANGE)
+        vm.onEmailValueChange("test@example.com")
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+
+        vm.changePassword()
+
+        assertEquals("Unexpected error. Try again later", vm.forgotPasswordUiState.value.error)
+    }
+
+    @Test
+    fun `changePassword does nothing when already loading`() = runTest {
+        val deferred = CompletableDeferred<Result<Unit>>()
+        coEvery { authRepo.changePassword(any(), any()) } coAnswers { deferred.await() }
+        val vm = createViewModel()
+        vm.setMode(PasswordMode.CHANGE)
+        vm.onEmailValueChange("test@example.com")
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+
+        vm.changePassword()
+        assertTrue(vm.forgotPasswordUiState.value.loading)
+
+        vm.changePassword()
+
+        coVerify(exactly = 1) { authRepo.changePassword(any(), any()) }
+        deferred.complete(Result.success(Unit))
+    }
+
+    @Test
+    fun `changePassword clears previous error`() = runTest {
+        coEvery { authRepo.changePassword(any(), any()) } returns Result.failure(Exception("First error"))
+        val vm = createViewModel()
+        vm.setMode(PasswordMode.CHANGE)
+        vm.onEmailValueChange("test@example.com")
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+        vm.changePassword()
+        assertEquals("First error", vm.forgotPasswordUiState.value.error)
+
+        coEvery { authRepo.changePassword(any(), any()) } returns Result.success(Unit)
+        vm.changePassword()
+        assertNull(vm.forgotPasswordUiState.value.error)
+    }
 }

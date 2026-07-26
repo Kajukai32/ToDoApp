@@ -20,6 +20,11 @@ class FakeAuthRepository : AuthRepository {
     var lastEmail: String? = null
     var lastPassword: String? = null
 
+    var changePasswordResult: Result<Unit> = Result.success(Unit)
+    var changePasswordCalled: Boolean = false
+    var lastCurrentPassword: String? = null
+    var lastNewPassword: String? = null
+
     var fakeUid: String? = null
     var fakeEmail: String? = null
     var signOutCalled: Boolean = false
@@ -53,6 +58,16 @@ class FakeAuthRepository : AuthRepository {
         return Result.success(Unit)
     }
 
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String
+    ): Result<Unit> {
+        lastCurrentPassword = currentPassword
+        lastNewPassword = newPassword
+        changePasswordCalled = true
+        return changePasswordResult
+    }
+
     override fun currentUser(): AuthUser? =
         fakeUid?.let { AuthUser(uId = it, email = fakeEmail) }
 
@@ -81,6 +96,10 @@ class FakeAuthRepository : AuthRepository {
         registerCalled = false
         lastEmail = null
         lastPassword = null
+        changePasswordResult = Result.success(Unit)
+        changePasswordCalled = false
+        lastCurrentPassword = null
+        lastNewPassword = null
         fakeUid = null
         fakeEmail = null
         signOutCalled = false

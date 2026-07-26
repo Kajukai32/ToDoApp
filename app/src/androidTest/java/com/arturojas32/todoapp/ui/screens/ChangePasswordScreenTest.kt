@@ -221,4 +221,67 @@ class ChangePasswordScreenTest {
 
         assert(vm.forgotPasswordUiState.value.email == "")
     }
+
+    // --- Change password flow ---
+
+    @Test
+    fun changePassword_triggersRepository() {
+        fakeAuthRepo.fakeUid = "test-uid"
+        fakeAuthRepo.fakeEmail = "user@example.com"
+
+        val vm = setContent(mode = PasswordMode.CHANGE)
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Confirm")
+            .performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 3000) {
+            fakeAuthRepo.changePasswordCalled
+        }
+        assert(fakeAuthRepo.lastCurrentPassword == "oldpassword123")
+        assert(fakeAuthRepo.lastNewPassword == "newpassword123")
+    }
+
+    @Test
+    fun changePassword_navigatesBackOnSuccess() {
+        fakeAuthRepo.fakeUid = "test-uid"
+        fakeAuthRepo.fakeEmail = "user@example.com"
+
+        var backClicked = false
+        val vm = setContent(
+            mode = PasswordMode.CHANGE,
+            onBackClick = { backClicked = true }
+        )
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Confirm")
+            .performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 3000) { backClicked }
+        assert(backClicked)
+    }
+
+    @Test
+    fun changePassword_showsErrorOnFailure() {
+        fakeAuthRepo.fakeUid = "test-uid"
+        fakeAuthRepo.fakeEmail = "user@example.com"
+        fakeAuthRepo.changePasswordResult = Result.failure(Exception("Wrong password"))
+
+        val vm = setContent(mode = PasswordMode.CHANGE)
+        vm.onCurrentPasswordFieldValueChange("oldpassword123")
+        vm.onNewPasswordFieldValueChange("newpassword123")
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Confirm")
+            .performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 3000) {
+            vm.forgotPasswordUiState.value.error != null
+        }
+        assert(vm.forgotPasswordUiState.value.error == "Wrong password")
+    }
 }
