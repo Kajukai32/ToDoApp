@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arturojas32.todoapp.ui.screens.AddTaskScreen
+import com.arturojas32.todoapp.ui.screens.ChangePasswordScreen
 import com.arturojas32.todoapp.ui.screens.LoginScreen
 import com.arturojas32.todoapp.ui.screens.RegisterScreen
 import com.arturojas32.todoapp.ui.screens.TaskListScreen
@@ -25,9 +26,19 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 onLoginClick = { navController.navigate(TaskListRoute) },
                 onGoToRegisterScreen = {
                     navController.navigate(route = RegisterScreenRoute)
-                })
+                }, onForgotPasswordClick = { navController.navigate(route = ChangePasswordRoute) })
         }
 
+        composable<ChangePasswordRoute> {
+            ChangePasswordScreen(
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginAndResetBackStack = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<LoginScreenRoute> { inclusive = true }
+                    }
+                }
+            )
+        }
         composable<TaskListRoute> {
             TaskListScreen(
                 onBackClick = {
@@ -37,6 +48,14 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 },
                 onAddTaskClick = {
                     navController.navigate(route = AddTaskRoute)
+                },
+                onResetPasswordClick = {
+                    navController.navigate(route = ChangePasswordRoute)
+                },
+                onLogOutClick = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<TaskListRoute> { inclusive = true }
+                    }
                 },
             ) { taskId: Int -> navController.navigate(UpdateTaskRoute(taskId)) }
         }
@@ -67,5 +86,3 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
         }
     }
 }
-
-

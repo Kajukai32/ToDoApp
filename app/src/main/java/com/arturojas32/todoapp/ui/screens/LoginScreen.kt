@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,7 +46,8 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel(),
     onLoginClick: () -> Unit,
-    onGoToRegisterScreen: () -> Unit
+    onGoToRegisterScreen: () -> Unit,
+    onForgotPasswordClick: () -> Unit
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val animatedButtonBorderColor by infiniteTransition.animateColor(
@@ -106,13 +108,29 @@ fun LoginScreen(
             )
             MyCheckBoxWithText(
                 isChecked = loginScreenUIState.stayLoggedValue,
-                onCheckedValueChange = {newValue -> loginViewModel.onStayLoggedValueChange(newValue)},
+                onCheckedValueChange = { newValue -> loginViewModel.onStayLoggedValueChange(newValue) },
                 text = "Stay logged in"
             )
 
             Spacer(modifier = modifier.weight(0.7f))
 
-
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                TextButton(
+                    onClick = { onForgotPasswordClick() },
+                    content = {
+                        Text(
+                            text = "I forget my password",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                )
+            }
             loginScreenUIState.error?.let { error ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -147,7 +165,7 @@ fun LoginScreen(
             ) {
                 Text(text = "Register")
             }
-            Spacer(modifier = modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
         }
     }

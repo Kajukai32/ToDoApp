@@ -28,14 +28,16 @@ class LoginScreenTest {
 
     private fun setContent(
         onLoginClick: () -> Unit = {},
-        onGoToRegisterScreen: () -> Unit = {}
+        onGoToRegisterScreen: () -> Unit = {},
+        onForgotPasswordClick: () -> Unit = {}
     ): LoginViewModel {
         val viewModel = LoginViewModel(fakeAuthRepo)
         composeTestRule.setContent {
             LoginScreen(
                 loginViewModel = viewModel,
                 onLoginClick = onLoginClick,
-                onGoToRegisterScreen = onGoToRegisterScreen
+                onGoToRegisterScreen = onGoToRegisterScreen,
+                onForgotPasswordClick = onForgotPasswordClick
             )
         }
         return viewModel
@@ -157,6 +159,19 @@ class LoginScreenTest {
             .performClick()
 
         assert(registerClicked)
+    }
+
+    // --- Forgot password ---
+
+    @Test
+    fun forgotPassword_invokesOnForgotPasswordClick() {
+        var forgotClicked = false
+        setContent(onForgotPasswordClick = { forgotClicked = true })
+
+        composeTestRule.onNodeWithText("I forget my password")
+            .performClick()
+
+        assert(forgotClicked)
     }
 
     // --- Password visibility ---

@@ -14,6 +14,7 @@ fun MyEmailTextField(value: String, onValueChange: (String) -> Unit, isEnabled: 
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
             autoCorrectEnabled = false,

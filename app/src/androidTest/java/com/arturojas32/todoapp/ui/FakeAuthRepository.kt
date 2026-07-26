@@ -21,6 +21,7 @@ class FakeAuthRepository : AuthRepository {
     var lastPassword: String? = null
 
     var fakeUid: String? = null
+    var fakeEmail: String? = null
     var signOutCalled: Boolean = false
 
     private val _authState = MutableStateFlow<AuthUser?>(null)
@@ -47,8 +48,13 @@ class FakeAuthRepository : AuthRepository {
         fakeUid = null
     }
 
+    override suspend fun sendPassword(email: String): Result<Unit> {
+        lastEmail = email
+        return Result.success(Unit)
+    }
+
     override fun currentUser(): AuthUser? =
-        fakeUid?.let { AuthUser(uId = it) }
+        fakeUid?.let { AuthUser(uId = it, email = fakeEmail) }
 
     override suspend fun saveUserId(userId: String) {
 
@@ -76,6 +82,7 @@ class FakeAuthRepository : AuthRepository {
         lastEmail = null
         lastPassword = null
         fakeUid = null
+        fakeEmail = null
         signOutCalled = false
     }
 }
