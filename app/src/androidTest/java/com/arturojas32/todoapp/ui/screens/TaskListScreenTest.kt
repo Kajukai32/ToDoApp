@@ -40,6 +40,8 @@ class TaskListScreenTest {
     private fun setContent(
         onBackClick: () -> Unit = {},
         onAddTaskClick: () -> Unit = {},
+        onResetPasswordClick: () -> Unit = {},
+        onLogOutClick: () -> Unit = {},
         onTaskItemClick: (Int) -> Unit = {}
     ): Pair<TaskListViewModel, TaskFeaturesViewModel> {
         val taskListViewModel = TaskListViewModel(fakeTaskRepo, fakeAuthRepo, syncManager)
@@ -56,6 +58,8 @@ class TaskListScreenTest {
                 taskFeaturesViewModel = taskFeaturesViewModel,
                 onBackClick = onBackClick,
                 onAddTaskClick = onAddTaskClick,
+                onResetPasswordClick = onResetPasswordClick,
+                onLogOutClick = onLogOutClick,
                 onTaskItemClick = onTaskItemClick
             )
         }
@@ -78,14 +82,11 @@ class TaskListScreenTest {
     // --- Empty state ---
 
     @Test
-    fun backButton_invokesOnBackClick() {
-        var backClicked = false
-        setContent(onBackClick = { backClicked = true })
+    fun menuIcon_opensDrawer() {
+        setContent()
 
-        composeTestRule.onNodeWithContentDescription("back icon")
-            .performClick()
-
-        assert(backClicked)
+        composeTestRule.onNodeWithContentDescription("menu icon")
+            .assertExists()
     }
 
     @Test

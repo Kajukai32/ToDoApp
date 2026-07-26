@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.arturojas32.todoapp.domain.model.AuthUser
 import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.arturojas32.todoapp.utils.emailAndPasswordValidator
+import com.arturojas32.todoapp.utils.toReadable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -119,9 +120,6 @@ class LoginViewModel @Inject constructor(
     }
 }
 
-private fun Throwable.toReadable(): String {
-    return (this.message ?: "Unexpected error. Try again later")
-}
 
 
 data class LoginScreenUiState(

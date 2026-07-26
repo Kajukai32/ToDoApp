@@ -51,6 +51,16 @@ class AuthRepositoryImpl @Inject constructor(
         dataStoreManager.clearUserId()
     }
 
+    override suspend fun sendPassword(email: String): Result<Unit> {
+        return runCatching {
+            auth.useAppLanguage()
+            val normalizedEmail = email.trim().lowercase()
+            require(normalizedEmail.isNotBlank()) { "Email cannot be blank" }
+            auth.sendPasswordResetEmail(normalizedEmail).await()
+            Unit
+        }
+    }
+
     override fun currentUser(): AuthUser? {
         return auth.currentUser?.toAuthUser()
     }

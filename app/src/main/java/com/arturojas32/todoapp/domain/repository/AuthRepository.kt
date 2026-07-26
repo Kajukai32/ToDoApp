@@ -13,6 +13,8 @@ interface AuthRepository {
 
     suspend fun signOut()
 
+    suspend fun sendPassword(email: String): Result<Unit>
+
     fun currentUser(): AuthUser?
 
     suspend fun saveUserId(userId: String)
