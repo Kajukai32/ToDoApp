@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -64,7 +63,9 @@ fun TaskListScreen(
     onAddTaskClick: () -> Unit,
     onResetPasswordClick: () -> Unit,
     onLogOutClick: () -> Unit,
-    onTaskItemClick: (Int) -> Unit
+    onChangePasswordClick: () -> Unit,
+    onTaskItemClick: (Int) -> Unit,
+
 ) {
 
     val taskListUiState by taskListViewModel.taskListUiState.collectAsStateWithLifecycle()
@@ -87,6 +88,14 @@ fun TaskListScreen(
                         onResetPasswordClick()
                     }
                 )
+                NavigationDrawerItem(
+                    label = { Text("Change Password") },
+                    selected = false,
+                    onClick = {
+                        onChangePasswordClick()
+                    }
+                )
+
                 NavigationDrawerItem(
                     label = { Text("Log out") },
                     selected = false,

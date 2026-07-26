@@ -15,6 +15,8 @@ interface AuthRepository {
 
     suspend fun sendPassword(email: String): Result<Unit>
 
+    suspend fun changePassword(currentPassword: String, newPassword: String): Result<Unit>
+
     fun currentUser(): AuthUser?
 
     suspend fun saveUserId(userId: String)

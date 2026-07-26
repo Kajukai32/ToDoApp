@@ -33,6 +33,7 @@ data class ForgotPasswordUIState(
 sealed interface ForgotPasswordEvent {
     data class ShowMessage(val message: String) : ForgotPasswordEvent
     data object ResetSent : ForgotPasswordEvent
+    data object PasswordChanged : ForgotPasswordEvent
 }
 
 @HiltViewModel
@@ -86,6 +87,34 @@ class ChangePasswordViewModel @Inject constructor(private val authRepository: Au
             } else {
                 _forgotPasswordUiState.update { currentState ->
                     currentState.copy(loading = false, error = r.exceptionOrNull()?.toReadable())
+                }
+            }
+        }
+    }
+
+    fun changePassword() {
+        if (_forgotPasswordUiState.value.loading) return
+
+        val state = _forgotPasswordUiState.value
+        val currentPw = state.currentPasswordField
+        val newPw = state.newPasswordField
+
+        if (!passwordValidator(currentPw) || !passwordValidator(newPw)) {
+            _forgotPasswordUiState.update { it.copy(error = "Passwords must be at least 9 characters") }
+            return
+        }
+
+        _forgotPasswordUiState.update { it.copy(loading = true, error = null) }
+
+        viewModelScope.launch {
+            val r = authRepository.changePassword(currentPw, newPw)
+            if (r.isSuccess) {
+                _forgotPasswordUiState.update { it.copy(loading = false, error = null) }
+                _events.emit(ForgotPasswordEvent.ShowMessage(message = "Password changed successfully"))
+                _events.emit(ForgotPasswordEvent.PasswordChanged)
+            } else {
+                _forgotPasswordUiState.update {
+                    it.copy(loading = false, error = r.exceptionOrNull()?.toReadable())
                 }
             }
         }
