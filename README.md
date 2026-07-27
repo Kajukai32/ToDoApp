@@ -6,4 +6,4 @@ A task management Android app built with Jetpack Compose.
 
 Screenshots are stored in the [`screenshots/`](screenshots/) folder at the project root.
 
-<!-- Add your screenshots below once available -->
+
