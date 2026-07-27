@@ -74,6 +74,13 @@ class RegisterViewModel @Inject constructor(private val repo: AuthRepository) : 
         checkValidCredentials()
     }
 
+    fun onConfirmPasswordValueChange(newValue: String) {
+        _registerUiState.update { currentState ->
+            currentState.copy(newUserConfirmPassword = newValue)
+        }
+        checkValidCredentials()
+    }
+
     fun onPasswordVisibilityChange() {
 
         _registerUiState.update { currentState ->
@@ -88,7 +95,9 @@ class RegisterViewModel @Inject constructor(private val repo: AuthRepository) : 
                 isRegisterButtonEnabled = emailAndPasswordValidator(
                     email = currentState.newUserEmail,
                     password = currentState.newUserPassword
-                ) && !currentState.loading
+                ) && currentState.newUserPassword == currentState.newUserConfirmPassword
+                        && currentState.newUserConfirmPassword.isNotEmpty()
+                        && !currentState.loading
             )
         }
     }
@@ -127,6 +136,7 @@ data class RegisterUiState(
     val newUserEmail: String = "",
     val passwordVisibility: Boolean = true,
     val newUserPassword: String = "",
+    val newUserConfirmPassword: String = "",
     val isRegisterButtonEnabled: Boolean = false,
     val stayLoggedValue: Boolean = true
 

@@ -126,7 +126,11 @@ class TaskFeaturesViewModel @Inject constructor(
         viewModelScope.launch {
             _taskState.value.deletedTask?.let { deletedTask ->
                 repo.insertTask(
-                    task = deletedTask
+                    task = deletedTask.copy(
+                        isDeleted = false,
+                        isSynced = false,
+                        lastModified = System.currentTimeMillis()
+                    )
                 )
             }
             _taskState.update { currentState ->

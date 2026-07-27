@@ -23,6 +23,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.arturojas32.todoapp.R
 import com.arturojas32.todoapp.domain.model.Task
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun MyTaskItem(
@@ -91,6 +94,19 @@ fun MyTaskItem(
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(text = task.createdDate)
+            }
+            MyCustomRow {
+                Text(
+                    text = "Last modified: ",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = if (task.lastModified > 0L) {
+                        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(task.lastModified))
+                    } else {
+                        "N/A"
+                    }
+                )
             }
             MyCustomRow {
                 Text(

@@ -14,6 +14,9 @@ data class UpdateTaskRoute(val taskId: Int)
 object ChangePasswordRoute
 
 @Serializable
+object ResetPasswordRoute
+
+@Serializable
 object LoginScreenRoute
 
 @Serializable

@@ -4,7 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,10 +39,31 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
+
             ToDoAppTheme {
                 val mainVm: MainViewModel = hiltViewModel()
                 val mainUiState by mainVm.mainUiState.collectAsStateWithLifecycle()
 
+
+                if (mainUiState.isLoading) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.task_login_screen_image),
+                            contentDescription = "password screen identifier image",
+                            modifier = Modifier
+                                .size(180.dp)
+                                .padding(top = 16.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+
+
+                    }
+                }
                 NavigationWrapper(
 //                    startOnHome = if (mainUiState.userId.isNotEmpty()) true else false
                     startOnHome = mainUiState.userId.isNotEmpty()
@@ -38,8 +72,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-//cosas que falta=
-//cerrar sesion, implementacion de stay logged in
+
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val authRepo: AuthRepository) : ViewModel() {
@@ -51,7 +84,7 @@ class MainViewModel @Inject constructor(private val authRepo: AuthRepository) : 
     init {
         viewModelScope.launch {
             authRepo.getUserId().collect { userId ->
-                _mainUiState.value = _mainUiState.value.copy(userId = userId)
+                _mainUiState.value = _mainUiState.value.copy(userId = userId, isLoading = false)
             }
         }
 
@@ -60,5 +93,6 @@ class MainViewModel @Inject constructor(private val authRepo: AuthRepository) : 
 
 data class MainUiState(
     val isDarkMode: Boolean = false,
-    val userId: String = ""
+    val userId: String = "",
+    val isLoading: Boolean = true
 )

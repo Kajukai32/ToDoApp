@@ -42,7 +42,8 @@ class TaskListScreenTest {
         onAddTaskClick: () -> Unit = {},
         onResetPasswordClick: () -> Unit = {},
         onLogOutClick: () -> Unit = {},
-        onTaskItemClick: (Int) -> Unit = {}
+        onTaskItemClick: (Int) -> Unit = {},
+        onChangePasswordClick: () -> Unit = {}
     ): Pair<TaskListViewModel, TaskFeaturesViewModel> {
         val taskListViewModel = TaskListViewModel(fakeTaskRepo, fakeAuthRepo, syncManager)
         val taskFeaturesViewModel = TaskFeaturesViewModel(
@@ -60,7 +61,8 @@ class TaskListScreenTest {
                 onAddTaskClick = onAddTaskClick,
                 onResetPasswordClick = onResetPasswordClick,
                 onLogOutClick = onLogOutClick,
-                onTaskItemClick = onTaskItemClick
+                onTaskItemClick = onTaskItemClick,
+                onChangePasswordClick = onChangePasswordClick,
             )
         }
         return Pair(taskListViewModel, taskFeaturesViewModel)

@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -64,7 +63,8 @@ fun TaskListScreen(
     onAddTaskClick: () -> Unit,
     onResetPasswordClick: () -> Unit,
     onLogOutClick: () -> Unit,
-    onTaskItemClick: (Int) -> Unit
+    onTaskItemClick: (Int) -> Unit,
+    onChangePasswordClick: () -> Unit
 ) {
 
     val taskListUiState by taskListViewModel.taskListUiState.collectAsStateWithLifecycle()
@@ -85,6 +85,13 @@ fun TaskListScreen(
                     selected = false,
                     onClick = {
                         onResetPasswordClick()
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text("Change Password") },
+                    selected = false,
+                    onClick = {
+                        onChangePasswordClick()
                     }
                 )
                 NavigationDrawerItem(
@@ -144,13 +151,6 @@ fun TaskListScreen(
                             MyDropDownItem(
                                 optionText = "Sort by",
                                 onClick = { isSortExpanded = true }
-                            )
-                            MyDropDownItem(
-                                optionText = "Log out",
-                                onClick = {
-                                    taskListViewModel.onLogOutOptionClick()
-                                    isMenuExpanded = false
-                                }
                             )
                         }
                         DropdownMenu(
