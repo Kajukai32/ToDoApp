@@ -26,45 +26,14 @@ A task management Android app built with Jetpack Compose, featuring user authent
 
 ## Screenshots
 
-### Login
-
-![Login screen](screenshots/login/Screenshot_20260726_222000.png)
-![Login with credentials](screenshots/login/Screenshot_20260726_222142.png)
-
-### Register
-
-![Register screen](screenshots/register/Screenshot_20260726_222300.png)
-![Register form filled](screenshots/register/Screenshot_20260726_222327.png)
-![Register confirmation](screenshots/register/Screenshot_20260726_222341.png)
-
-### Task List
-
-![Task list](screenshots/tasklistscreen/Screenshot_20260726_222532.png)
-![Task list populated](screenshots/tasklistscreen/Screenshot_20260726_222632.png)
-![Task list sort](screenshots/tasklistscreen/Screenshot_20260726_222727.png)
-![Task list search](screenshots/tasklistscreen/Screenshot_20260726_222851.png)
-![Task list drawer](screenshots/tasklistscreen/Screenshot_20260726_222901.png)
-![Task list completed](screenshots/tasklistscreen/Screenshot_20260726_223026.png)
-
-### Reset Password
-
-![Reset password screen](screenshots/resetpassword/Screenshot_20260726_223258.png)
-![Reset password sent](screenshots/resetpassword/Screenshot_20260726_223516.png)
-
-### Change Password
-
-![Change password screen](screenshots/changepassword/Screenshot_20260726_223641.png)
-![Change password filled](screenshots/changepassword/Screenshot_20260726_223741.png)
-
-### New / Edit Task
-
-![New task screen](screenshots/neworedittask/Screenshot_20260726_223820.png)
-![New task form](screenshots/neworedittask/Screenshot_20260726_223900.png)
-![New task filled](screenshots/neworedittask/Screenshot_20260726_223917.png)
-![Task saved](screenshots/neworedittask/Screenshot_20260726_223930.png)
-![Edit task](screenshots/neworedittask/Screenshot_20260726_223954.png)
-![Edit task filled](screenshots/neworedittask/Screenshot_20260726_224000.png)
-![Edit task confirmation](screenshots/neworedittask/Screenshot_20260726_224031.png)
+| Screen | Preview |
+|--------|---------|
+| [Login](screenshots/login/) | [![Login](screenshots/login/Screenshot_20260726_222000.png)](screenshots/login/) |
+| [Register](screenshots/register/) | [![Register](screenshots/register/Screenshot_20260726_222300.png)](screenshots/register/) |
+| [Task List](screenshots/tasklistscreen/) | [![Task List](screenshots/tasklistscreen/Screenshot_20260726_222532.png)](screenshots/tasklistscreen/) |
+| [Reset Password](screenshots/resetpassword/) | [![Reset Password](screenshots/resetpassword/Screenshot_20260726_223258.png)](screenshots/resetpassword/) |
+| [Change Password](screenshots/changepassword/) | [![Change Password](screenshots/changepassword/Screenshot_20260726_223641.png)](screenshots/changepassword/) |
+| [New / Edit Task](screenshots/neworedittask/) | [![New Task](screenshots/neworedittask/Screenshot_20260726_223820.png)](screenshots/neworedittask/) |
 
 ## Project Structure
 
