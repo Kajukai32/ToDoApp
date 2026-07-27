@@ -8,6 +8,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,10 +33,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arturojas32.todoapp.R
 import com.arturojas32.todoapp.ui.components.MyCheckBoxWithText
 import com.arturojas32.todoapp.ui.components.MyEmailTextField
 import com.arturojas32.todoapp.ui.components.MyPasswordTextField
@@ -90,6 +94,15 @@ fun LoginScreen(
                 alignment = Alignment.CenterVertically
             ), horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = modifier.weight(1.3f))
+            Image(
+                painter = painterResource(id = R.drawable.task_login_screen_image),
+                contentDescription = "password screen identifier image",
+                modifier = Modifier
+                    .size(180.dp)
+                    .padding(top = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
             Spacer(modifier = modifier.weight(1.3f))
 
             MyEmailTextField(

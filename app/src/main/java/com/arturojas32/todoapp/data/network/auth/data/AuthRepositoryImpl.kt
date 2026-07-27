@@ -4,7 +4,7 @@ import com.arturojas32.todoapp.data.local.database.DataStoreManager
 import com.arturojas32.todoapp.data.mappers.toAuthUser
 import com.arturojas32.todoapp.domain.model.AuthUser
 import com.arturojas32.todoapp.domain.repository.AuthRepository
-import com.google.firebase.auth.EmailAuthProvider
+import com.arturojas32.todoapp.domain.repository.TaskRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +17,8 @@ import javax.inject.Singleton
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
+    private val taskRepository: TaskRepository
 ) : AuthRepository {
 
     override val authState: Flow<AuthUser?> = callbackFlow {
@@ -49,6 +50,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signOut() {
         auth.signOut()
+        taskRepository.deleteAllTasks()
         dataStoreManager.clearUserId()
     }
 

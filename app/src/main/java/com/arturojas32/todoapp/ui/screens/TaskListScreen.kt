@@ -63,9 +63,8 @@ fun TaskListScreen(
     onAddTaskClick: () -> Unit,
     onResetPasswordClick: () -> Unit,
     onLogOutClick: () -> Unit,
-    onChangePasswordClick: () -> Unit,
     onTaskItemClick: (Int) -> Unit,
-
+    onChangePasswordClick: () -> Unit
 ) {
 
     val taskListUiState by taskListViewModel.taskListUiState.collectAsStateWithLifecycle()
@@ -95,7 +94,6 @@ fun TaskListScreen(
                         onChangePasswordClick()
                     }
                 )
-
                 NavigationDrawerItem(
                     label = { Text("Log out") },
                     selected = false,
@@ -153,13 +151,6 @@ fun TaskListScreen(
                             MyDropDownItem(
                                 optionText = "Sort by",
                                 onClick = { isSortExpanded = true }
-                            )
-                            MyDropDownItem(
-                                optionText = "Log out",
-                                onClick = {
-                                    taskListViewModel.onLogOutOptionClick()
-                                    isMenuExpanded = false
-                                }
                             )
                         }
                         DropdownMenu(

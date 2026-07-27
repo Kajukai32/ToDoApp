@@ -1,5 +1,6 @@
 package com.arturojas32.todoapp.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,9 +24,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arturojas32.todoapp.R
 import com.arturojas32.todoapp.ui.components.MyCheckBoxWithText
 import com.arturojas32.todoapp.ui.components.MyEmailTextField
 import com.arturojas32.todoapp.ui.components.MyPasswordTextField
@@ -71,6 +74,16 @@ fun RegisterScreen(
         ) {
 
             Spacer(modifier = Modifier.weight(1.75f))
+            Image(
+                painter = painterResource(id = R.drawable.register_screen),
+                contentDescription = "password screen identifier image",
+                modifier = Modifier
+                    .size(180.dp)
+                    .padding(top = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+
+            )
+            Spacer(modifier = Modifier.weight(1.75f))
 
             MyEmailTextField(
                 value = registerUiState.newUserEmail,
@@ -81,6 +94,14 @@ fun RegisterScreen(
                 value = registerUiState.newUserPassword,
                 passwordVisibility = registerUiState.passwordVisibility,
                 onValueChange = { newValue -> registerViewModel.onPasswordValueChange(newValue = newValue) },
+                onPasswordVisibilityClick = { registerViewModel.onPasswordVisibilityChange() },
+                isEnabled = !registerUiState.loading
+            )
+            MyPasswordTextField(
+                value = registerUiState.newUserConfirmPassword,
+                hintText = "Confirm password",
+                passwordVisibility = registerUiState.passwordVisibility,
+                onValueChange = { newValue -> registerViewModel.onConfirmPasswordValueChange(newValue = newValue) },
                 onPasswordVisibilityClick = { registerViewModel.onPasswordVisibilityChange() },
                 isEnabled = !registerUiState.loading
             )

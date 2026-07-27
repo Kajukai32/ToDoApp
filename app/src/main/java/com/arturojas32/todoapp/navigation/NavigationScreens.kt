@@ -18,6 +18,9 @@ object ResetPasswordRoute
 object ChangePasswordRoute
 
 @Serializable
+object ResetPasswordRoute
+
+@Serializable
 object LoginScreenRoute
 
 @Serializable

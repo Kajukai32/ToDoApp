@@ -27,14 +27,12 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 onLoginClick = { navController.navigate(TaskListRoute) },
                 onGoToRegisterScreen = {
                     navController.navigate(route = RegisterScreenRoute)
-                }, onForgotPasswordClick = {
-                    navController.navigate(route = ResetPasswordRoute)
-                })
+                },                 onForgotPasswordClick = { navController.navigate(route = ResetPasswordRoute) })
         }
 
         composable<ResetPasswordRoute> {
             ChangePasswordScreen(
-                mode = PasswordMode.RESET,
+                mode = PasswordMode.CHANGE,
                 onBackClick = { navController.popBackStack() },
                 onNavigateToLoginAndResetBackStack = {
                     navController.navigate(route = LoginScreenRoute) {
@@ -72,10 +70,11 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                         popUpTo<TaskListRoute> { inclusive = true }
                     }
                 },
+                onTaskItemClick = { taskId: Int -> navController.navigate(UpdateTaskRoute(taskId)) },
                 onChangePasswordClick = {
                     navController.navigate(route = ChangePasswordRoute)
                 },
-            ) { taskId: Int -> navController.navigate(UpdateTaskRoute(taskId)) }
+            )
         }
 
         composable<AddTaskRoute> {
@@ -102,6 +101,28 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                         popUpTo<LoginScreenRoute> { inclusive = true }
                     }
                 })
+        }
+        composable<ResetPasswordRoute> {
+            ChangePasswordScreen(
+                mode = PasswordMode.RESET,
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginAndResetBackStack = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<TaskListRoute> { inclusive = true }
+                    }
+                }
+            )
+        }
+        composable<ChangePasswordRoute> {
+            ChangePasswordScreen(
+                mode = PasswordMode.CHANGE,
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginAndResetBackStack = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<TaskListRoute> { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }
