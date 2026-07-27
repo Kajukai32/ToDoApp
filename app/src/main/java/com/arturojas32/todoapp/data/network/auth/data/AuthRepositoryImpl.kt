@@ -64,6 +64,19 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String
+    ): Result<Unit> = runCatching {
+        val user = auth.currentUser
+            ?: throw IllegalStateException("No authenticated user")
+
+        val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+        user.reauthenticate(credential).await()
+        user.updatePassword(newPassword).await()
+        Unit
+    }
+
     override fun currentUser(): AuthUser? {
         return auth.currentUser?.toAuthUser()
     }

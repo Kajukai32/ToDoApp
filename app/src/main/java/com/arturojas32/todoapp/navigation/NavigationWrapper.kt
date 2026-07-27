@@ -30,7 +30,7 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 },                 onForgotPasswordClick = { navController.navigate(route = ResetPasswordRoute) })
         }
 
-        composable<ChangePasswordRoute> {
+        composable<ResetPasswordRoute> {
             ChangePasswordScreen(
                 mode = PasswordMode.CHANGE,
                 onBackClick = { navController.popBackStack() },
@@ -41,6 +41,17 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 }
             )
         }
+
+        composable<ChangePasswordRoute> {
+            ChangePasswordScreen(
+                mode = PasswordMode.CHANGE,
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginAndResetBackStack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         composable<TaskListRoute> {
             TaskListScreen(
                 onBackClick = {
@@ -71,6 +82,7 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 navController.navigate(route = TaskListRoute) {
                     popUpTo<TaskListRoute> { inclusive = true }
                 }
+
             })
         }
         composable<UpdateTaskRoute> {
