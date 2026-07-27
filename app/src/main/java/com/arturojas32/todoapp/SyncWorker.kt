@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepository
+import com.arturojas32.todoapp.domain.repository.RemoteDbRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 

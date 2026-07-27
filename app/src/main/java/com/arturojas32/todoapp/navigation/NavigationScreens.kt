@@ -12,6 +12,16 @@ object AddTaskRoute
 data class UpdateTaskRoute(val taskId: Int)
 
 @Serializable
+object ResetPasswordRoute
+
+@Serializable
+object ChangePasswordRoute
+
+@Serializable
+object ResetPasswordRoute
+
+@Serializable
 object LoginScreenRoute
+
 @Serializable
 object RegisterScreenRoute

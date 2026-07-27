@@ -32,6 +32,14 @@ class TaskRepositoryImpl @Inject constructor(private val taskDao: TaskDao) : Tas
         return tasksToDomain
     }
 
+    override fun getAllTasks1(): Flow<List<Task>> {
+
+        val tasksToDomain = taskDao.getAllTasks1().map { currentCollection ->
+            currentCollection.map { taskEntity -> taskEntity.toDomain() }
+        }
+        return tasksToDomain
+    }
+
     override suspend fun getTaskById(taskID: Int): Task? {
         val requestedTask = taskDao.getTaskById(taskId = taskID)
 

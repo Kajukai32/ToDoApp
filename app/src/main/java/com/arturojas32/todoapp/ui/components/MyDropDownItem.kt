@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 fun MyDropDownItem(modifier: Modifier = Modifier, optionText: String, onClick: () -> Unit) {
 
     DropdownMenuItem(
+        modifier = modifier,
         text = { Text(text = optionText) },
         onClick = { onClick() },
         contentPadding = PaddingValues(16.dp)

@@ -7,9 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arturojas32.todoapp.ui.screens.AddTaskScreen
+import com.arturojas32.todoapp.ui.screens.ChangePasswordScreen
 import com.arturojas32.todoapp.ui.screens.LoginScreen
 import com.arturojas32.todoapp.ui.screens.RegisterScreen
 import com.arturojas32.todoapp.ui.screens.TaskListScreen
+import com.arturojas32.todoapp.ui.viewmodels.PasswordMode
 
 @Composable
 fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
@@ -25,7 +27,29 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 onLoginClick = { navController.navigate(TaskListRoute) },
                 onGoToRegisterScreen = {
                     navController.navigate(route = RegisterScreenRoute)
-                })
+                },                 onForgotPasswordClick = { navController.navigate(route = ResetPasswordRoute) })
+        }
+
+        composable<ResetPasswordRoute> {
+            ChangePasswordScreen(
+                mode = PasswordMode.CHANGE,
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginAndResetBackStack = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<LoginScreenRoute> { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<ChangePasswordRoute> {
+            ChangePasswordScreen(
+                mode = PasswordMode.CHANGE,
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginAndResetBackStack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable<TaskListRoute> {
@@ -38,7 +62,19 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 onAddTaskClick = {
                     navController.navigate(route = AddTaskRoute)
                 },
-            ) { taskId: Int -> navController.navigate(UpdateTaskRoute(taskId)) }
+                onResetPasswordClick = {
+                    navController.navigate(route = ResetPasswordRoute)
+                },
+                onLogOutClick = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<TaskListRoute> { inclusive = true }
+                    }
+                },
+                onTaskItemClick = { taskId: Int -> navController.navigate(UpdateTaskRoute(taskId)) },
+                onChangePasswordClick = {
+                    navController.navigate(route = ChangePasswordRoute)
+                },
+            )
         }
 
         composable<AddTaskRoute> {
@@ -46,6 +82,7 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                 navController.navigate(route = TaskListRoute) {
                     popUpTo<TaskListRoute> { inclusive = true }
                 }
+
             })
         }
         composable<UpdateTaskRoute> {
@@ -65,7 +102,27 @@ fun NavigationWrapper(modifier: Modifier = Modifier, startOnHome: Boolean) {
                     }
                 })
         }
+        composable<ResetPasswordRoute> {
+            ChangePasswordScreen(
+                mode = PasswordMode.RESET,
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginAndResetBackStack = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<TaskListRoute> { inclusive = true }
+                    }
+                }
+            )
+        }
+        composable<ChangePasswordRoute> {
+            ChangePasswordScreen(
+                mode = PasswordMode.CHANGE,
+                onBackClick = { navController.popBackStack() },
+                onNavigateToLoginAndResetBackStack = {
+                    navController.navigate(route = LoginScreenRoute) {
+                        popUpTo<TaskListRoute> { inclusive = true }
+                    }
+                }
+            )
+        }
     }
 }
-
-

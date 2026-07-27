@@ -14,10 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.arturojas32.todoapp.R
+import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyTopBar(
+
     onBackClick: () -> Unit,
     title: String,
     rightIconAction: @Composable RowScope.() -> Unit = {}
@@ -39,7 +41,7 @@ fun MyTopBar(
                     .clickable(onClick = { onBackClick() })
                     .padding(horizontal = 12.dp),
                 painter = painterResource(R.drawable.ic_arrowback),
-                contentDescription = null
+                contentDescription = "back icon"
             )
         })
 

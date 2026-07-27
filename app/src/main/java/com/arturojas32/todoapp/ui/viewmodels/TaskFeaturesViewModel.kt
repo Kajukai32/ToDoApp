@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.arturojas32.todoapp.data.local.repository.TaskRepositoryImpl
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
-import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepository
+import com.arturojas32.todoapp.domain.repository.AuthRepository
+import com.arturojas32.todoapp.domain.repository.RemoteDbRepository
 import com.arturojas32.todoapp.domain.model.Task
+import com.arturojas32.todoapp.domain.repository.TaskRepository
 import com.arturojas32.todoapp.navigation.UpdateTaskRoute
 import com.arturojas32.todoapp.utils.SyncManager
 import com.arturojas32.todoapp.utils.getCurrentDate
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskFeaturesViewModel @Inject constructor(
-    private val repo: TaskRepositoryImpl,
+    private val repo: TaskRepository,
     private val savedStateHandle: SavedStateHandle,
     private val remoteDbRepo: RemoteDbRepository,
     private val syncManager: SyncManager,
@@ -82,7 +82,7 @@ class TaskFeaturesViewModel @Inject constructor(
     fun onSaveTaskClick() {
         viewModelScope.launch {
             val taskToSave = _taskState.value.task.copy(
-                uId = authRepo.currentUser()!!.uid,
+                uId = authRepo.currentUser()!!.uId,
                 isSynced = false,
                 lastModified = System.currentTimeMillis()
             )
@@ -126,7 +126,11 @@ class TaskFeaturesViewModel @Inject constructor(
         viewModelScope.launch {
             _taskState.value.deletedTask?.let { deletedTask ->
                 repo.insertTask(
-                    task = deletedTask
+                    task = deletedTask.copy(
+                        isDeleted = false,
+                        isSynced = false,
+                        lastModified = System.currentTimeMillis()
+                    )
                 )
             }
             _taskState.update { currentState ->

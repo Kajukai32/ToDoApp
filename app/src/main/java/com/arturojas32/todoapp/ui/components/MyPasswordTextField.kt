@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -19,6 +20,7 @@ import com.arturojas32.todoapp.R
 @Composable
 fun MyPasswordTextField(
     value: String,
+    hintText: String = "Password",
     passwordVisibility: Boolean = true,
     onValueChange: (String) -> Unit,
     onPasswordVisibilityClick: () -> Unit = {},
@@ -28,10 +30,12 @@ fun MyPasswordTextField(
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
+        singleLine = true,
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
             autoCorrectEnabled = false,
-            keyboardType = KeyboardType.Password
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Next
         ),
         visualTransformation = if (!passwordVisibility) {
             PasswordVisualTransformation()
@@ -54,7 +58,7 @@ fun MyPasswordTextField(
             )
         }, enabled = isEnabled,
         label = {
-            Text(text = "Password")
+            Text(text = hintText)
         }
     )
 }

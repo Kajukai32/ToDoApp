@@ -2,7 +2,7 @@ package com.arturojas32.todoapp.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import com.arturojas32.todoapp.utils.emailAndPasswordValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,6 +46,7 @@ class RegisterViewModel @Inject constructor(private val repo: AuthRepository) : 
                     currentState.copy(loading = false, error = null)
                 }
                 _event.emit(RegisterEvent.Success)
+                onRegisterEventSuccess()
             } else {
                 _registerUiState.update { currentState ->
                     currentState.copy(loading = false, error = r.exceptionOrNull()?.toReadable())
@@ -62,13 +63,20 @@ class RegisterViewModel @Inject constructor(private val repo: AuthRepository) : 
             currentState.copy(newUserEmail = newValue)
         }
 
-
+        checkValidCredentials()
     }
 
     fun onPasswordValueChange(newValue: String) {
 
         _registerUiState.update { currentState ->
             currentState.copy(newUserPassword = newValue)
+        }
+        checkValidCredentials()
+    }
+
+    fun onConfirmPasswordValueChange(newValue: String) {
+        _registerUiState.update { currentState ->
+            currentState.copy(newUserConfirmPassword = newValue)
         }
         checkValidCredentials()
     }
@@ -87,8 +95,26 @@ class RegisterViewModel @Inject constructor(private val repo: AuthRepository) : 
                 isRegisterButtonEnabled = emailAndPasswordValidator(
                     email = currentState.newUserEmail,
                     password = currentState.newUserPassword
-                ) && !currentState.loading
+                ) && currentState.newUserPassword == currentState.newUserConfirmPassword
+                        && currentState.newUserConfirmPassword.isNotEmpty()
+                        && !currentState.loading
             )
+        }
+    }
+
+    fun onValueChangeStayLogged(newValue: Boolean) {
+        _registerUiState.update { currentState ->
+            currentState.copy(stayLoggedValue = newValue)
+        }
+    }
+
+    private fun onRegisterEventSuccess() {
+        if (_registerUiState.value.stayLoggedValue) {
+            viewModelScope.launch {
+                repo.currentUser()?.let { user ->
+                    repo.saveUserId(userId = user.uId)
+                }
+            }
         }
     }
 
@@ -110,6 +136,8 @@ data class RegisterUiState(
     val newUserEmail: String = "",
     val passwordVisibility: Boolean = true,
     val newUserPassword: String = "",
+    val newUserConfirmPassword: String = "",
     val isRegisterButtonEnabled: Boolean = false,
+    val stayLoggedValue: Boolean = true
 
 )

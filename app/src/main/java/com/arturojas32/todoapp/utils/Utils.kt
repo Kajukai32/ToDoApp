@@ -31,3 +31,15 @@ fun emailAndPasswordValidator(email: String, password: String): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 8
 }
 
+fun passwordValidator(password: String): Boolean {
+    return password.length > 8
+}
+
+fun emailValidator(email: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
+fun Throwable.toReadable(): String {
+    return (this.message ?: "Unexpected error. Try again later")
+}
+

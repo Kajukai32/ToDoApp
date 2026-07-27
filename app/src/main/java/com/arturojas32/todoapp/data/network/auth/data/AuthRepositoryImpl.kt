@@ -1,7 +1,11 @@
 package com.arturojas32.todoapp.data.network.auth.data
 
+import com.arturojas32.todoapp.data.local.database.DataStoreManager
+import com.arturojas32.todoapp.data.mappers.toAuthUser
+import com.arturojas32.todoapp.domain.model.AuthUser
+import com.arturojas32.todoapp.domain.repository.AuthRepository
+import com.arturojas32.todoapp.domain.repository.TaskRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -12,15 +16,17 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val dataStoreManager: DataStoreManager,
+    private val taskRepository: TaskRepository
 ) : AuthRepository {
 
-    override val authState: Flow<FirebaseUser?> = callbackFlow {
+    override val authState: Flow<AuthUser?> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { fa ->
-            trySend(fa.currentUser)
+            trySend(fa.currentUser?.toAuthUser())
         }
         auth.addAuthStateListener(listener)
-        trySend(auth.currentUser)
+        trySend(auth.currentUser?.toAuthUser())
         awaitClose { auth.removeAuthStateListener(listener) }
     }.distinctUntilChanged()
 
@@ -33,28 +39,61 @@ class AuthRepositoryImpl @Inject constructor(
             Unit
         }
 
-
     override suspend fun register(
         email: String,
         password: String
     ): Result<Unit> =
         runCatching {
-            //devuelve un Task<AuthResult>, como no se resuelve de manera inmediata el await lo
-            // convierte en una funcion suspendida que debe correr en un corutina, si
-            // el registro fue exitoso devuelve el result pero si no devuleve una exception que es atrapada por el runCatching
             auth.createUserWithEmailAndPassword(email, password).await()
             Unit
         }
 
-
-    override fun signOut() {
+    override suspend fun signOut() {
         auth.signOut()
+        taskRepository.deleteAllTasks()
+        dataStoreManager.clearUserId()
     }
 
-    override fun currentUser(): FirebaseUser? {
-    //si hay un user loggeado devuelve un fbUser sino null
-        return auth.currentUser
+    override suspend fun sendPassword(email: String): Result<Unit> {
+        return runCatching {
+            auth.useAppLanguage()
+            val normalizedEmail = email.trim().lowercase()
+            require(normalizedEmail.isNotBlank()) { "Email cannot be blank" }
+            auth.sendPasswordResetEmail(normalizedEmail).await()
+            Unit
+        }
     }
 
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String
+    ): Result<Unit> = runCatching {
+        val user = auth.currentUser
+            ?: throw IllegalStateException("No authenticated user")
 
+        val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+        user.reauthenticate(credential).await()
+        user.updatePassword(newPassword).await()
+        Unit
+    }
+
+    override fun currentUser(): AuthUser? {
+        return auth.currentUser?.toAuthUser()
+    }
+
+    override suspend fun saveUserId(userId: String) {
+        dataStoreManager.saveUserId(userId)
+    }
+
+    override suspend fun saveThemeMode(themeMode: Boolean) {
+        dataStoreManager.saveThemeModeKey(themeMode)
+    }
+
+    override fun getUserId(): Flow<String> {
+        return dataStoreManager.getUserId()
+    }
+
+    override fun getThemeMode(): Flow<Boolean> {
+        return dataStoreManager.getDarkModePref()
+    }
 }

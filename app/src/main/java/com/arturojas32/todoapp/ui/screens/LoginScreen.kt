@@ -8,6 +8,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,26 +18,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arturojas32.todoapp.R
+import com.arturojas32.todoapp.ui.components.MyCheckBoxWithText
 import com.arturojas32.todoapp.ui.components.MyEmailTextField
 import com.arturojas32.todoapp.ui.components.MyPasswordTextField
 import com.arturojas32.todoapp.ui.viewmodels.LoginViewModel
@@ -47,7 +50,8 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel(),
     onLoginClick: () -> Unit,
-    onGoToRegisterScreen: () -> Unit
+    onGoToRegisterScreen: () -> Unit,
+    onForgotPasswordClick: () -> Unit
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val animatedButtonBorderColor by infiniteTransition.animateColor(
@@ -57,7 +61,7 @@ fun LoginScreen(
             animation = tween(2000), repeatMode = RepeatMode.Reverse
         )
     )
-    val animatedButtonBorderWidtSize: Dp by infiniteTransition.animateValue(
+    val animatedButtonBorderWidthSize: Dp by infiniteTransition.animateValue(
         initialValue = 0.8.dp,
         targetValue = 3.0.dp,
         typeConverter = Dp.VectorConverter,
@@ -91,6 +95,15 @@ fun LoginScreen(
             ), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = modifier.weight(1.3f))
+            Image(
+                painter = painterResource(id = R.drawable.task_login_screen_image),
+                contentDescription = "password screen identifier image",
+                modifier = Modifier
+                    .size(180.dp)
+                    .padding(top = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = modifier.weight(1.3f))
 
             MyEmailTextField(
                 value = loginScreenUIState.email,
@@ -106,24 +119,31 @@ fun LoginScreen(
                 onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
                 isEnabled = !loginScreenUIState.loading
             )
+            MyCheckBoxWithText(
+                isChecked = loginScreenUIState.stayLoggedValue,
+                onCheckedValueChange = { newValue -> loginViewModel.onStayLoggedValueChange(newValue) },
+                text = "Stay logged in"
+            )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = loginScreenUIState.stayLoggedValue,
-                    onCheckedChange = { loginViewModel.onStayLoggedValueChange() },
-                    enabled = true,
-                    colors = CheckboxDefaults.colors()
-                )
-                Text(
-                    text = "Stay logged in",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontStyle = FontStyle.Italic,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
             Spacer(modifier = modifier.weight(0.7f))
 
-
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                TextButton(
+                    onClick = { onForgotPasswordClick() },
+                    content = {
+                        Text(
+                            text = "I forget my password",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                )
+            }
             loginScreenUIState.error?.let { error ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -136,7 +156,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 border = BorderStroke(
                     width = if (!loginScreenUIState.loading) {
-                        animatedButtonBorderWidtSize
+                        animatedButtonBorderWidthSize
                     } else {
                         1.dp
                     },
@@ -158,7 +178,7 @@ fun LoginScreen(
             ) {
                 Text(text = "Register")
             }
-            Spacer(modifier = modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
         }
     }

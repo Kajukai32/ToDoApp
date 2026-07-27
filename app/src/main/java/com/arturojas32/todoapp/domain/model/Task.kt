@@ -1,9 +1,8 @@
 package com.arturojas32.todoapp.domain.model
 
-
 data class Task(
     val id: Int = 0,
-    val uId: String = "",
+    val uId: String = "123",
     val remoteId: String? = null,
     val title: String = "",
     val desc: String? = null,

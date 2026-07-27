@@ -1,9 +1,8 @@
 package com.arturojas32.todoapp.ui.viewmodels
 
 import app.cash.turbine.test
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
+import com.arturojas32.todoapp.domain.repository.AuthRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

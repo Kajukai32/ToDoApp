@@ -28,8 +28,10 @@ robolectric = "4.14.1"
 coroutinesTest = "1.9.0"
 mockk = "1.13.13"
 turbine = "1.2.0"
+dataPrefV = "1.1.7"
 
 [libraries]
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
@@ -69,6 +71,8 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 room-testing = { group = "androidx.room", name = "room-testing", version.ref = "roomV" }
 kotlinx-coroutines-test-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+data-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataPrefV"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

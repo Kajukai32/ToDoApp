@@ -2,8 +2,8 @@ package com.arturojas32.todoapp.ui.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import com.arturojas32.todoapp.data.local.repository.TaskRepositoryImpl
-import com.arturojas32.todoapp.data.network.auth.data.AuthRepository
-import com.arturojas32.todoapp.data.network.remotedb.RemoteDbRepository
+import com.arturojas32.todoapp.domain.repository.AuthRepository
+import com.arturojas32.todoapp.domain.repository.RemoteDbRepository
 import com.arturojas32.todoapp.domain.model.Task
 import com.arturojas32.todoapp.utils.SyncManager
 import io.mockk.coEvery
@@ -148,7 +148,7 @@ class TaskFeaturesViewModelTest {
 
     @Test
     fun `save task inserts into repo and triggers sync`() = runTest {
-        coEvery { authRepo.currentUser() } returns mockk { every { uid } returns "user123" }
+        coEvery { authRepo.currentUser() } returns mockk { every { uId } returns "user123" }
         val vm = createViewModel()
 
         vm.onTitleTextFieldValueChange("New task")
@@ -166,7 +166,7 @@ class TaskFeaturesViewModelTest {
 
     @Test
     fun `save task sets isSynced to false and updates lastModified`() = runTest {
-        coEvery { authRepo.currentUser() } returns mockk { every { uid } returns "user123" }
+        coEvery { authRepo.currentUser() } returns mockk { every { uId } returns "user123" }
         val vm = createViewModel()
 
         val before = System.currentTimeMillis()
