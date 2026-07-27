@@ -26,14 +26,12 @@ A task management Android app built with Jetpack Compose, featuring user authent
 
 ## Screenshots
 
-| Screen | Preview |
-|--------|---------|
-| [Login](screenshots/login/) | [![Login](screenshots/login/Screenshot_20260726_222000.png)](screenshots/login/) |
-| [Register](screenshots/register/) | [![Register](screenshots/register/Screenshot_20260726_222300.png)](screenshots/register/) |
-| [Task List](screenshots/tasklistscreen/) | [![Task List](screenshots/tasklistscreen/Screenshot_20260726_222532.png)](screenshots/tasklistscreen/) |
-| [Reset Password](screenshots/resetpassword/) | [![Reset Password](screenshots/resetpassword/Screenshot_20260726_223258.png)](screenshots/resetpassword/) |
-| [Change Password](screenshots/changepassword/) | [![Change Password](screenshots/changepassword/Screenshot_20260726_223641.png)](screenshots/changepassword/) |
-| [New / Edit Task](screenshots/neworedittask/) | [![New Task](screenshots/neworedittask/Screenshot_20260726_223820.png)](screenshots/neworedittask/) |
+- [Login](screenshots/login/)
+- [Register](screenshots/register/)
+- [Task List](screenshots/tasklistscreen/)
+- [Reset Password](screenshots/resetpassword/)
+- [Change Password](screenshots/changepassword/)
+- [New / Edit Task](screenshots/neworedittask/)
 
 ## Project Structure
 
